@@ -1,0 +1,85 @@
+# openenv.yaml  (project root — required for openenv validate)
+#
+# This file is the machine-readable manifest for the OpenEnv registry.
+# It must be present at the project root and pass:
+#   openenv validate
+#
+# HF Spaces reads the README.md YAML block for Space config (see README.md).
+# This file is for the OpenEnv CLI and judge pipeline specifically.
+
+name: satellite-downlink-scheduler
+version: "1.0.0"
+author: ""                          # fill in your HF username before submitting
+repository: ""                      # fill in your HF Space URL before submitting
+license: "apache-2.0"
+
+description: >
+  A simulation of 8 LEO satellites with TLE-derived orbital pass windows
+  and 4 ground stations with weather-induced availability degradation.
+  Each satellite carries a priority queue of observation data.
+  The agent must assign contact windows to maximise total
+  priority-weighted bytes downloaded within a 24-hour planning horizon.
+
+tags:
+  - openenv
+  - scheduling
+  - satellite
+  - real-world
+  - multi-agent
+  - planning
+  - resource-allocation
+
+# ── Environment interface ─────────────────────────────────────
+
+action_space:
+  type: discrete-structured
+  description: >
+    One structured action per 10-minute tick. action_type is one of:
+    schedule, preempt, hold, noop.
+  actions:
+    - name: schedule
+      description: Assign a satellite to a station for a specific pass window
+      fields:
+        sat_id:     "int  [0–7]   — satellite to schedule"
+        station_id: "int  [0–3]   — ground station to use"
+        window_id:  "str         — window identifier from pass_windows list"
+
+    - name: preempt
+      description: Cancel a committed future assignment to free the station slot
+      fields:
+        schedule_id: "str — assignment ID from current_schedule list"
+
+    - name: hold
+      description: Mark a satellite as held, blocking auto-scheduling suggestions
+      fields:
+        sat_id: "int [0–7]"
+
+    - name: noop
+      description: Advance the clock with no assignment change
+      fields: {}
+
+observation_space:
+  type: structured
+  fields:
+    current_time_min:
+      type: int
+      range: "[0, 1440]"
+      description: Minutes elapsed since episode start
+
+    pass_windows:
+      type: "List[PassWindowModel]"
+      description: >
+        Upcoming contact windows within a 4-hour lookahead.
+        Each window has: window_id, satellite_id, station_id, tick,
+        duration_s, max_rate_mbps, elevation_deg, link_quality, max_bytes.
+
+    station_availability:
+      type: "Dict[str, float]"
+      range: "[0.0, 1.0]"
+      description: >
+        Current weather multiplier per station. Resampled every 30 minutes
+        from Beta(5,2). Always 1.0 for task1 (clear sky).
+
+    satellite_buffer_bytes:
+      type: "Dict[str, int]"
+      description: Remaining bytes in each satellite's on

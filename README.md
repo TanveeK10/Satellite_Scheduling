@@ -1,0 +1,321 @@
+---
+title: Satellite Downlink Scheduler
+emoji: 🛰️
+colorFrom: indigo
+colorTo: blue
+sdk: docker
+app_port: 7860
+tags:
+  - openenv
+  - scheduling
+  - satellite
+  - real-world
+  - reinforcement-learning
+short_description: OpenEnv environment — LEO satellite downlink scheduling
+---
+
+# Satellite Downlink Scheduler
+
+An [OpenEnv](https://github.com/meta-pytorch/OpenEnv) environment that
+simulates the real operational problem satellite operators face every day:
+8 low-Earth-orbit satellites pass briefly over 4 ground stations.
+Each satellite carries a priority queue of observation data.
+Weather degrades ground station capacity unpredictably.
+Emergency imagery can arrive mid-mission.
+
+The agent plays the role of a mission planner — assigning contact windows,
+managing conflicts, and retasking when priorities change —
+to maximise priority-weighted bytes downloaded in a 24-hour horizon.
+
+---
+
+## Why this environment
+
+Real satellite operators at organisations like ESA, NASA, and Planet Labs
+run exactly this scheduling problem continuously.
+The gap between a greedy scheduler and an optimal one is significant —
+high-priority disaster imagery delayed by a poor schedule has real
+operational consequences.
+
+This environment fills a genuine gap in the OpenEnv ecosystem:
+no existing environment models the combination of
+orbital mechanics, resource contention, weather uncertainty,
+and dynamic replanning under hard deadlines.
+
+---
+
+## Environment description
+
+| Property | Value |
+|---|---|
+| Satellites | 8 LEO (TLE-derived orbits, pinned epoch 2025-01-01) |
+| Ground stations | 4 (Svalbard, McMurdo, Bangalore, Fairbanks) |
+| Episode length | 144 ticks × 10 minutes = 24 hours |
+| Decision frequency | One action per 10-minute tick |
+| Transport | WebSocket `/ws` (primary), HTTP `/reset` `/step` `/state` |
+| Reward range | [−0.10, 1.0] |
+
+---
+
+## Observation space
+
+Every tick the agent receives a `SatelliteObservation` with these fields:
+
+| Field | Type | Description |
+|---|---|---|
+| `current_time_min` | `int` | Minutes elapsed since episode start |
+| `pass_windows` | `List[PassWindowModel]` | Upcoming windows within 4-hour lookahead |
+| `station_availability` | `Dict[str, float]` | Weather multiplier per station `[0.0, 1.0]` |
+| `satellite_buffer_bytes` | `Dict[str, int]` | Remaining bytes per satellite |
+| `data_priority_queues` | `Dict[str, List[DataChunkModel]]` | Chunk queue per satellite, priority-sorted |
+| `downlink_rates_bps` | `Dict[str, int]` | Max link rate per satellite |
+| `current_schedule` | `List[ScheduleEntryModel]` | Committed future assignments |
+| `info` | `Dict` | Step metadata — conflict flag, bytes downloaded, emergency injection flag |
+
+Each `PassWindowModel` contains:
+`window_id`, `satellite_id`, `station_id`, `tick`, `duration_s`,
+`max_rate_mbps`, `elevation_deg`, `link_quality`, `max_bytes`.
+
+Each `DataChunkModel` contains:
+`chunk_id`, `priority` (1/2/3), `size_bytes`,
+`injected_at_min`, `deadline_min` (None for non-emergency).
+
+---
+
+## Action space
+
+One structured JSON action per tick:
+```json
+{"action_type": "schedule",  "sat_id": 2, "station_id": 0, "window_id": "w_s2_g0_042"}
+{"action_type": "preempt",   "schedule_id": "sch_s2_g0_042_a1b2"}
+{"action_type": "hold",      "sat_id": 3}
+{"action_type": "noop"}
+```
+
+| Action | Effect | Invalid if |
+|---|---|---|
+| `schedule` | Assigns satellite to station for that window | Station conflict, satellite conflict, empty buffer |
+| `preempt` | Cancels a future assignment, frees the station slot | Window already started |
+| `hold` | Marks satellite as held | — |
+| `noop` | Advances clock with no change | — |
+
+**Conflict handling:** rejected actions return `reward −0.05`
+and set `info["conflict"] = True`. The schedule is unchanged.
+
+---
+
+## Reward function
+
+### Per-step reward
+```
+r_step = Σ w(priority_i) × bytes_downloaded_i / normalizer
+```
+
+Where `w(1)=1.0`, `w(2)=2.0`, `w(3)=3.0` and
+`normalizer = Σ w(priority_i) × chunk_size_i` over all chunks in the episode.
+
+### Delay penalty (Task 3 only)
+
+For emergency chunks downloaded after their deadline:
+```
+delay_penalty = 0.10 × min(delay_minutes / 60, 1.0)
+```
+
+Full `0.10` penalty if not downloaded at all by episode end.
+
+---
+
+## Tasks
+
+### Task 1 — easy: clear-sky scheduling
+
+- 2 satellites, 2 stations, no weather degradation
+- All data priority 1 or 2, no deadlines
+- No station conflicts possible
+- Agent must simply assign available windows
+
+**Grader:** `bytes_downloaded / bytes_available`
+
+| Agent | Score |
+|---|---|
+| Noop | 0.00 |
+| LLM baseline | ~0.72 |
+| Perfect | 1.00 |
+
+---
+
+### Task 2 — medium: weather degradation
+
+- All 8 satellites, all 4 stations
+- Station availability resampled every 30 min from Beta(5,2), mean ≈ 0.71
+- Priority 1/2/3 mix, windows overlap, conflicts possible
+- Agent must prefer high-priority satellites and work around weather
+
+**Grader:** `Σ w(p) × bytes_downloaded / Σ w(p) × bytes_available`
+
+| Agent | Score |
+|---|---|
+| Noop | 0.00 |
+| LLM baseline | ~0.44 |
+| Weather ceiling | ~0.88 |
+
+---
+
+### Task 3 — hard: emergency retasking
+
+- All 8 satellites, all 4 stations, weather as Task 2
+- At `t=240min` and `t=480min`: 3 emergency (priority-3) chunks
+  injected into satellites 2, 4, 6 — each with a 3-hour deadline
+- Agent must detect `info["emergency_injection"]`,
+  preempt lower-priority assignments, and retask before deadline
+- Score penalises late or missed emergency downloads
+
+**Grader:** `0.4 × base_score + 0.6 × emergency_score − delay_penalties`
+
+| Agent | Score |
+|---|---|
+| Noop | 0.00 |
+| Ignores emergencies | ~0.30 |
+| LLM baseline | ~0.29 |
+| Strong agent | ~0.75 |
+
+---
+
+## Baseline scores
+
+Reproduced with `seed=42`, `llama3.2` via Ollama on local hardware:
+```
+Task    Score   Steps   Reward    Time
+──────  ──────  ──────  ────────  ──────
+task1   0.7200    144   0.7200    48.3s
+task2   0.4400    144   0.4400    51.1s
+task3   0.2900    144   0.2900    53.7s
+```
+
+To reproduce:
+```bash
+# Start environment (task1)
+SATELLITE_TASK=task1 uvicorn satellite_env.server.app:app \
+    --host 0.0.0.0 --port 8000
+
+# Run inference
+API_BASE_URL=http://localhost:11434/v1 \
+MODEL_NAME=llama3.2 \
+HF_TOKEN=ollama \
+ENV_URL=http://localhost:8000 \
+python inference.py
+```
+
+---
+
+## Setup and usage
+
+### Prerequisites
+
+- Python 3.11+
+- Docker Desktop
+- Ollama (local dev) or HF token (production)
+
+### Installation
+```bash
+# Clone
+git clone https://huggingface.co/spaces/YOUR_USERNAME/satellite-downlink-scheduler
+cd satellite-downlink-scheduler
+
+# Install
+pip install -e .
+
+# Generate scenario data (run once)
+python scripts/generate_windows.py
+```
+
+### Run locally (no Docker)
+```bash
+# Terminal 1 — start server
+SATELLITE_TASK=task1 \
+uvicorn satellite_env.server.app:app --host 0.0.0.0 --port 8000 --reload
+
+# Terminal 2 — run inference
+API_BASE_URL=http://localhost:11434/v1 \
+MODEL_NAME=llama3.2 \
+HF_TOKEN=ollama \
+python inference.py
+```
+
+### Run with Docker
+```bash
+# Build
+docker build -t satellite-env:latest \
+    -f src/envs/satellite_env/server/Dockerfile .
+
+# Run
+docker run -d -p 8000:7860 \
+    -e SATELLITE_TASK=task1 \
+    satellite-env:latest
+
+# Health check
+curl http://localhost:8000/health
+```
+
+### Switch tasks
+```bash
+# Server picks task from env var — no rebuild needed
+docker run -d -p 8000:7860 -e SATELLITE_TASK=task3 satellite-env:latest
+```
+
+### Use the client directly
+```python
+from src.envs.satellite_env.client import SatelliteEnv
+from src.envs.satellite_env.models import SatelliteAction
+
+with SatelliteEnv(base_url="http://localhost:8000").sync() as env:
+    result = env.reset()
+    while not result.done:
+        result = env.step(SatelliteAction(action_type="noop"))
+    print(f"Final score: {env.state().final_score:.4f}")
+```
+
+---
+
+## Project structure
+```
+satellite-downlink-scheduler/
+├── inference.py                    # baseline agent (project root — mandatory)
+├── openenv.yaml                    # OpenEnv manifest
+├── pyproject.toml
+├── README.md
+├── .dockerignore
+├── scripts/
+│   └── generate_windows.py         # run once — generates data/
+├── data/
+│   ├── pass_windows.json           # pre-baked TLE windows
+│   └── scenarios/
+│       ├── task1_seed42.json
+│       ├── task2_seed42.json
+│       └── task3_seed42.json
+└── src/
+    └── envs/
+        └── satellite_env/
+            ├── models.py           # Pydantic types
+            ├── client.py           # SatelliteEnv(EnvClient)
+            └── server/
+                ├── app.py          # FastAPI via create_fastapi_app()
+                ├── environment.py  # reset / step / state
+                ├── scheduler.py    # conflict detection + downlink
+                ├── weather.py      # Beta(5,2) availability sampler
+                ├── graders.py      # grade_task1 / 2 / 3
+                ├── requirements.txt
+                └── Dockerfile
+```
+
+---
+
+## Reproducibility guarantee
+
+All randomness is seeded (`seed=42`).
+Pass windows are pre-computed from 8 pinned TLE strings
+at a fixed epoch (`2025-01-01T00:00:00Z`) and stored in `data/`.
+No live network calls occur at runtime.
+Running `inference.py` twice with the same model and env vars
+produces scores within ±0.01 of each other
+(small variance from LLM sampling temperature).

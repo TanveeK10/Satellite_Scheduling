@@ -1,0 +1,110 @@
+# pyproject.toml  (project root)
+#
+# This file serves two purposes:
+#   1. Makes `pip install -e .` work so `satellite_env` resolves on sys.path
+#   2. Declares all dependencies for local development (venv + uv)
+#
+# The server/requirements.txt is a pinned subset used inside Docker.
+# This file uses looser bounds for local dev flexibility.
+
+[build-system]
+requires      = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name        = "satellite-downlink-scheduler"
+version     = "1.0.0"
+description = "OpenEnv environment: satellite downlink scheduling"
+readme      = "README.md"
+requires-python = ">=3.11"
+
+dependencies = [
+    # OpenEnv core
+    "openenv>=0.1.0",
+    "fastapi>=0.111.0",
+    "uvicorn[standard]>=0.29.0",
+    "websockets>=12.0",
+    "pydantic>=2.7.0",
+
+    # Environment logic
+    "numpy>=1.26.0",
+    "skyfield>=1.48",
+
+    # Inference script
+    "openai>=1.30.0",
+    "requests>=2.31.0",
+
+    # Server extras
+    "python-multipart>=0.0.9",
+    "httpx>=0.27.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "httpx>=0.27.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.json", "*.yaml", "*.txt"]
+
+# ── uv script entrypoints ─────────────────────────────────────
+# Allows `uv run server` as a shortcut (matches OpenEnv convention)
+[project.scripts]
+satellite-server = "satellite_env.server.app:create_app"
+```
+```
+# .dockerignore  (project root)
+#
+# Keeps the Docker build context lean.
+# Without this, Docker sends your entire venv and cache to the daemon.
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Development tools
+.git/
+.gitignore
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.idea/
+.vscode/
+*.iml
+
+# Test and scratch files
+scratch_*.py
+tests/
+htmlcov/
+.coverage
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+outputs/
+logs/
+
+# Keep data/ — the container needs pass_windows.json and scenario files
+# Keep src/ — the environment source code
+# Keep scripts/ — generate_windows.py (not needed at runtime but small)
