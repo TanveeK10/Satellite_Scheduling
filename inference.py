@@ -15,271 +15,172 @@ Optional env vars:
     MAX_STEPS      — max ticks per episode (default: 144)
     TEMPERATURE    — LLM temperature      (default: 0.2)
     DEBUG          — set to "1" for verbose per-step output
-
-Run locally against Ollama:
-    API_BASE_URL=http://localhost:11434/v1 \\
-    MODEL_NAME=llama3.2 \\
-    HF_TOKEN=ollama \\
-    python inference.py
-
-Run against HF inference router:
-    API_BASE_URL=https://router.huggingface.co/v1 \\
-    MODEL_NAME=meta-llama/Llama-3.1-8B-Instruct \\
-    HF_TOKEN=hf_xxxx \\
-    ENV_URL=https://your-username-satellite-env.hf.space \\
-    python inference.py
-
-Expected baseline scores (seed=42, llama3.2 via Ollama):
-    task1 — ~0.72
-    task2 — ~0.44
-    task3 — ~0.29
 """
 
-import json
 import os
+import re
 import sys
 import textwrap
 import time
-from openenv.core.client_types import StepResult
 from openai import OpenAI
 
 from src.envs.satellite_env.client import SatelliteEnv
 from src.envs.satellite_env.models import SatelliteAction, SatelliteObservation
-from src.envs.satellite_env.server.graders import grade_breakdown
-from src.envs.satellite_env.server.environment import SatelliteState
 
-# ── Imports (after path setup) ────────────────────────────────
 sys.path.insert(0, "src")
 
-
 # ── Mandatory env vars ────────────────────────────────────────
-API_BASE_URL: str = os.environ.get("API_BASE_URL", "")
-MODEL_NAME: str = os.environ.get("MODEL_NAME", "")
-HF_TOKEN: str = os.environ.get("HF_TOKEN", "")
+API_BASE_URL: str = os.environ.get("API_BASE_URL", "http://localhost:11434/v1")
+MODEL_NAME: str = os.environ.get("MODEL_NAME", "qwen:latest")
+HF_TOKEN: str = os.environ.get("HF_TOKEN", "ollama")
 
 # ── Optional env vars ─────────────────────────────────────────
 ENV_URL: str = os.environ.get("ENV_URL", "http://localhost:8000")
 MAX_STEPS: int = int(os.environ.get("MAX_STEPS", "144"))
 TEMPERATURE: float = float(os.environ.get("TEMPERATURE", "0.2"))
-MAX_TOKENS: int = int(os.environ.get("MAX_TOKENS", "512"))
 DEBUG: bool = os.environ.get("DEBUG", "0") == "1"
 SEED: int = 42
 
-# ── Validation ────────────────────────────────────────────────
 _MISSING = [v for v, val in [
     ("API_BASE_URL", API_BASE_URL),
     ("MODEL_NAME", MODEL_NAME),
     ("HF_TOKEN", HF_TOKEN),
 ] if not val]
-
 if _MISSING:
     print(f"[ERROR] Missing required env vars: {', '.join(_MISSING)}")
-    print("  Set them before running inference.py — see file header for examples.")
     sys.exit(1)
 
 # ─────────────────────────────────────────────────────────────
-# System prompt
+# System prompt — numbered choice (prevents window_id hallucination)
 # ─────────────────────────────────────────────────────────────
 
 SYSTEM_PROMPT = textwrap.dedent("""
-    You are an autonomous satellite mission planner.
-    You control a downlink scheduling environment.
+    You are a satellite downlink scheduler. At each step you see a numbered list
+    of available contact windows ranked by quality. Pick the BEST one to schedule.
 
-    At each step you receive the current state of the satellite constellation:
-    - pass_windows: upcoming contact opportunities (satellite ↔ station pairs)
-    - station_availability: weather quality per station [0.0–1.0]
-    - satellite_buffer_bytes: data remaining per satellite
-    - data_priority_queues: data chunks awaiting download (priority 1/2/3)
-    - current_schedule: already committed assignments
-    - current_time_min: minutes elapsed in the 24-hour episode
-    - info: result of your last action
-
-    Your goal: maximise priority-weighted bytes downloaded.
-    Priority weights: routine=1, important=2, emergency=3.
-    Emergency chunks (priority 3) have deadlines — download them FIRST.
-
-    Available actions (respond with EXACTLY ONE JSON object):
-        {"action_type": "schedule",  "sat_id": int, "station_id": int, "window_id": str}
-        {"action_type": "preempt",   "schedule_id": str}
-        {"action_type": "hold",      "sat_id": int}
-        {"action_type": "noop"}
+    Respond with ONLY a single number (the window choice), or 0 for no action.
+    No JSON, no explanation, just the number.
 
     Strategy:
-    1. If info.emergency_injection is true → immediately schedule the
-       satellite carrying priority-3 data to the best available station.
-    2. Prefer windows with high link_quality and high station_availability.
-    3. Prefer satellites with high-priority data in their queues.
-    4. Use preempt() to free a station slot when emergency data arrives.
-    5. Use noop only when no useful windows are available this tick.
-
-    Respond with ONLY a valid JSON object. No explanation, no markdown fences.
-    Example: {"action_type": "schedule", "sat_id": 2, "station_id": 0, "window_id": "w_s2_g0_042"}
+    - Pick windows for satellites with the most high-priority data
+    - Prefer higher link quality and station availability
+    - If an EMERGENCY flag is set, prioritize emergency data immediately
+    - Respond 0 only when no good windows exist
 """).strip()
 
 
 # ─────────────────────────────────────────────────────────────
-# Observation → prompt
+# Build ranked window choices from the observation
 # ─────────────────────────────────────────────────────────────
 
-def _obs_to_prompt(obs: SatelliteObservation, step: int, history: list[str]) -> str:
-    """
-    Serialise the observation into a compact, LLM-readable prompt.
-
-    We deliberately truncate large fields (full queue listing, all windows)
-    to stay within model context limits. The agent gets the most
-    actionable information — not the raw full observation dump.
-    """
-    # Top windows by link_quality × station_availability
+def _build_choices(obs: SatelliteObservation) -> list[dict]:
+    """Build a ranked list of actionable window choices."""
     avail = obs.station_availability
-    ranked = sorted(
-        obs.pass_windows,
-        key=lambda w: w.link_quality * float(avail.get(str(w.station_id), 1.0)),
-        reverse=True,
-    )[:12]  # top 12 windows — enough context without blowing the context window
+    choices = []
 
-    windows_text = "\n".join(
-        f"  window_id={w.window_id}  sat={w.satellite_id}  "
-        f"stn={w.station_id}  tick={w.tick}  "
-        f"quality={w.link_quality:.2f}  "
-        f"avail={float(avail.get(str(w.station_id), 1.0)):.2f}  "
-        f"max_bytes={w.max_bytes:,}"
-        for w in ranked
-    ) or "  (none in lookahead)"
-
-    # Buffer summary — only satellites with data remaining
-    buffers = {
-        k: v for k, v in obs.satellite_buffer_bytes.items() if v > 0
-    }
-    buffer_text = "  " + "  ".join(
-        f"sat{k}={v / 1e6:.1f}MB" for k, v in sorted(buffers.items())
-    ) if buffers else "  (all empty)"
-
-    # Priority queue heads — show highest-priority chunk per satellite
-    queue_heads = []
-    for sid, chunks in obs.data_priority_queues.items():
-        if not chunks:
+    for w in obs.pass_windows:
+        # Skip satellites with no data to download
+        sat_buffer = obs.satellite_buffer_bytes.get(str(w.satellite_id), 0)
+        if sat_buffer <= 0:
             continue
-        top = max(chunks, key=lambda c: c.priority)
-        deadline = f"  deadline={top.deadline_min}min" if top.deadline_min else ""
-        queue_heads.append(
-            f"  sat{sid}: p{top.priority} {top.size_bytes / 1e6:.1f}MB{deadline}"
-        )
-    queue_text = "\n".join(queue_heads) or "  (all empty)"
 
-    # Current schedule
-    sched_text = "\n".join(
-        f"  {e.schedule_id}: sat{e.satellite_id}→stn{e.station_id} tick={e.tick}"
-        for e in obs.current_schedule[:6]
-    ) or "  (empty)"
+        sta_avail = float(avail.get(str(w.station_id), 1.0))
+        score = w.link_quality * sta_avail * (w.max_bytes / 1e9)
 
-    # Last 4 history lines for context
-    history_text = "\n".join(f"  {h}" for h in history[-4:]) or "  (none)"
+        sat_chunks = obs.data_priority_queues.get(str(w.satellite_id), [])
+        max_pri = max((c.priority for c in sat_chunks), default=1)
+        has_deadline = any(c.deadline_min is not None for c in sat_chunks)
+        priority_boost = max_pri * (3.0 if has_deadline else 1.0)
+        score *= priority_boost
 
-    # Info flags
-    flags = []
-    if obs.info.get("emergency_injection"):
-        flags.append("*** EMERGENCY INJECTION — reschedule immediately ***")
-    if obs.info.get("conflict"):
-        flags.append(f"last action rejected: {obs.info.get('action_error')}")
-    flags_text = "\n  ".join(flags) if flags else "none"
+        choices.append({
+            "window": w,
+            "score": score,
+            "sta_avail": sta_avail,
+            "max_pri": max_pri,
+            "has_deadline": has_deadline,
+            "buffer_mb": sat_buffer / 1e6,
+        })
 
-    return textwrap.dedent(f"""
-        Step {step} | t={obs.current_time_min}min | reward_so_far={obs.reward:.4f}
-
-        FLAGS: {flags_text}
-
-        TOP UPCOMING WINDOWS (by quality × availability):
-        {windows_text}
-
-        STATION AVAILABILITY: {dict(avail)}
-
-        SATELLITE BUFFERS (non-empty):
-        {buffer_text}
-
-        HIGHEST-PRIORITY QUEUE HEADS:
-        {queue_text}
-
-        CURRENT SCHEDULE:
-        {sched_text}
-
-        RECENT ACTIONS:
-        {history_text}
-
-        Respond with ONE JSON action object.
-    """).strip()
+    choices.sort(key=lambda c: c["score"], reverse=True)
+    return choices[:8]
 
 
 # ─────────────────────────────────────────────────────────────
-# LLM action parsing
+# Observation → compact prompt with numbered choices
+# ─────────────────────────────────────────────────────────────
+
+def _obs_to_prompt(obs: SatelliteObservation, step: int,
+                   history: list[str], choices: list[dict]) -> str:
+    choices_text = ""
+    for i, c in enumerate(choices, 1):
+        w = c["window"]
+        choices_text += (
+            f"  [{i}] sat{w.satellite_id}→stn{w.station_id}  "
+            f"quality={w.link_quality:.2f}  avail={c['sta_avail']:.2f}  "
+            f"bytes={w.max_bytes / 1e6:.0f}MB  "
+            f"pri={c['max_pri']}"
+            + ("  ⚠DEADLINE" if c["has_deadline"] else "")
+            + "\n"
+        )
+    if not choices_text:
+        choices_text = "  (no windows)\n"
+
+    emg = "⚠ EMERGENCY — prioritize satellite with priority-3 data NOW\n" if obs.info.get("emergency_injection") else ""
+    conflict = f"⚠ Last action rejected: {obs.info.get('action_error')}\n" if obs.info.get("conflict") else ""
+
+    buffers = {k: v for k, v in obs.satellite_buffer_bytes.items() if v > 0}
+    buf_text = "  ".join(f"s{k}={v/1e6:.0f}MB" for k, v in sorted(buffers.items()))
+
+    hist = "\n".join(f"  {h}" for h in history[-3:]) or "  (none)"
+
+    return (
+        f"Step {step} | t={obs.current_time_min}min | reward={obs.reward:.4f}\n"
+        f"{emg}{conflict}"
+        f"\nBuffers: {buf_text}\n"
+        f"\nWindows (pick number, or 0 for noop):\n{choices_text}"
+        f"\nRecent:\n{hist}\n"
+        f"\nRespond with ONLY a number (1-{len(choices)}) or 0:"
+    )
+
+
+# ─────────────────────────────────────────────────────────────
+# Parse the LLM's numeric choice → SatelliteAction
 # ─────────────────────────────────────────────────────────────
 
 FALLBACK_ACTION = SatelliteAction(action_type="noop")
 
 
-def _parse_action(response_text: str) -> SatelliteAction:
-    """
-    Extract a SatelliteAction from the LLM response.
-
-    Tries in order:
-        1. Parse entire response as JSON
-        2. Find first {...} block in response
-        3. Fall back to noop
-
-    Invalid action_type values fall back to noop.
-    Missing optional fields are left as None — Pydantic handles defaults.
-    """
+def _parse_choice(response_text: str, choices: list[dict]) -> SatelliteAction:
+    """Parse LLM's number → schedule action for that window."""
     text = response_text.strip()
+    match = re.search(r'\d+', text)
+    if not match:
+        return FALLBACK_ACTION
 
-    # Strip markdown fences if model wrapped in ```json ... ```
-    if text.startswith("```"):
-        lines = text.split("\n")
-        text = "\n".join(
-            l for l in lines
-            if not l.strip().startswith("```")
-        ).strip()
+    n = int(match.group())
+    if n == 0 or n > len(choices):
+        return FALLBACK_ACTION
 
-    # Attempt 1 — full response is JSON
-    try:
-        data = json.loads(text)
-        return SatelliteAction(**data)
-    except Exception:
-        pass
-
-    # Attempt 2 — find first { ... } block
-    start = text.find("{")
-    end = text.rfind("}") + 1
-    if start >= 0 and end > start:
-        try:
-            data = json.loads(text[start:end])
-            return SatelliteAction(**data)
-        except Exception:
-            pass
-
-    # Attempt 3 — fallback
-    if DEBUG:
-        print(f"  [warn] Could not parse action from: {response_text[:120]!r}")
-    return FALLBACK_ACTION
+    w = choices[n - 1]["window"]
+    return SatelliteAction(
+        action_type="schedule",
+        sat_id=w.satellite_id,
+        station_id=w.station_id,
+        window_id=w.window_id,
+    )
 
 
 # ─────────────────────────────────────────────────────────────
 # Single episode runner
 # ─────────────────────────────────────────────────────────────
 
-def run_episode(
-        llm: OpenAI,
-        env: SatelliteEnv,
-        task: str,
-) -> dict:
-    """
-    Run one full episode of the given task.
-
-    Returns a result dict with keys:
-        task, steps, total_reward, final_score, breakdown, duration_s
-    """
-    result: "StepResult[SatelliteObservation]" = env.reset()  # ← add the type hint
-    obs: "SatelliteObservation" = result.observation  # ← add the type hint
+def run_episode(llm: OpenAI, env: SatelliteEnv, task: str) -> dict:
+    result = env.reset(task=task)
+    obs: SatelliteObservation = result.observation
     history: list[str] = []
     step = 0
+    llm_calls = 0
     t_start = time.time()
 
     print(f"\n{'─' * 60}")
@@ -289,74 +190,80 @@ def run_episode(
     while not obs.done and step < MAX_STEPS:
         step += 1
 
-        # ── Build prompt ──────────────────────────────────────
-        user_prompt = _obs_to_prompt(obs, step, history)
+        # Build ranked choices
+        choices = _build_choices(obs)
 
-        # ── Call LLM ─────────────────────────────────────────
-        try:
-            completion = llm.chat.completions.create(
-                model=MODEL_NAME,
-                temperature=TEMPERATURE,
-                max_tokens=MAX_TOKENS,
-                stream=False,
-                messages=[
-                    {"role": "system", "content": SYSTEM_PROMPT},
-                    {"role": "user", "content": user_prompt},
-                ],
-            )
-            raw_text = completion.choices[0].message.content or ""
-        except Exception as exc:
-            print(f"  [warn] LLM call failed at step {step}: {exc}")
-            raw_text = ""
+        if not choices and not obs.info.get("emergency_injection", False):
+            # No windows — auto-noop, no LLM call
+            action = SatelliteAction(action_type="noop")
+        else:
+            # Call LLM with numbered choices
+            user_prompt = _obs_to_prompt(obs, step, history, choices)
+            try:
+                completion = llm.chat.completions.create(
+                    model=MODEL_NAME,
+                    temperature=TEMPERATURE,
+                    max_tokens=16,  # just need a number
+                    stream=False,
+                    messages=[
+                        {"role": "system", "content": SYSTEM_PROMPT},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                )
+                raw_text = completion.choices[0].message.content or ""
+                llm_calls += 1
+            except Exception as exc:
+                print(f"  [warn] LLM call failed at step {step}: {exc}")
+                raw_text = ""
 
-        action = _parse_action(raw_text)
+            action = _parse_choice(raw_text, choices)
 
-        # ── Step environment ──────────────────────────────────
+            if DEBUG:
+                print(f"  step {step:3d}: LLM='{raw_text.strip()}' → {action.action_type}"
+                      + (f" sat{action.sat_id}→stn{action.station_id}" if action.action_type == "schedule" else ""))
+
+        # Step environment
         result = env.step(action)
         obs = result.observation
 
-        # ── Log ───────────────────────────────────────────────
+        # Log
         bytes_dl = obs.info.get("bytes_downloaded", 0)
         r_tick = obs.info.get("reward_last_tick", 0.0)
         conflict = obs.info.get("conflict", False)
         emg = obs.info.get("emergency_injection", False)
 
         history_line = (
-                f"t={obs.current_time_min:4d}min  "
-                f"{action.action_type:8s}  "
-                f"reward={r_tick:+.4f}  "
-                f"bytes={bytes_dl / 1e6:6.1f}MB"
-                + ("  [CONFLICT]" if conflict else "")
-                + ("  [EMERGENCY]" if emg else "")
+            f"t={obs.current_time_min:4d}min  "
+            f"{action.action_type:8s}  "
+            f"reward={r_tick:+.4f}  "
+            f"bytes={bytes_dl / 1e6:6.1f}MB"
+            + ("  [CONFLICT]" if conflict else "")
+            + ("  [EMERGENCY]" if emg else "")
         )
         history.append(history_line)
 
         if DEBUG:
-            print(f"  step {step:3d}: {history_line}")
+            err_msg = obs.info.get("action_error", "")
+            print(f"  step {step:3d}: {history_line}"
+                  + (f"  err={err_msg}" if err_msg else ""))
         elif step % 20 == 0 or emg or conflict:
             print(f"  step {step:3d}: t={obs.current_time_min}min  "
                   f"reward_total={obs.reward:.4f}"
                   + ("  *** EMERGENCY ***" if emg else ""))
 
-    # ── Final state ───────────────────────────────────────────
+    # Final state
     final_state = env.state()
     duration = time.time() - t_start
 
-    # grade_breakdown gives the detailed score breakdown for README output
-    episode_data = env.get_episode_data()
-    breakdown = grade_breakdown(
-        task=task,
-        download_log=episode_data["download_log"],
-        all_chunks=episode_data["all_chunks"],
-        emergency_injections=episode_data["emergency_injections"],
-    )
+    print(f"\n  Done: {step} steps, {llm_calls} LLM calls, {duration:.1f}s")
 
     return {
         "task": task,
         "steps": step,
+        "llm_calls": llm_calls,
         "total_reward": round(obs.reward, 4),
-        "final_score": round(final_state.final_score, 4),
-        "breakdown": breakdown,
+        "final_score": round(final_state.get("final_score", 0.0), 4),
+        "breakdown": final_state.get("breakdown", {}),
         "duration_s": round(duration, 1),
     }
 
@@ -375,55 +282,52 @@ def main() -> None:
     print(f"  Seed:    {SEED}")
     print(f"  Debug:   {DEBUG}")
 
-    # ── Build LLM client ─────────────────────────────────────
     llm = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
 
-    # ── Run all 3 tasks ───────────────────────────────────────
     tasks = ["task1", "task2", "task3"]
     results = []
 
-    for task in tasks:
-        print(f"\nConnecting to {ENV_URL} for {task}...")
-
-        # Each task gets its own connection with SATELLITE_TASK set
-        # We connect to the server which was started with the right task,
-        # or pass task via reset() if the server supports it.
-        # For baseline runs, start the server separately per task:
-        #   SATELLITE_TASK=task1 uvicorn satellite_env.server.app:app ...
-        # Or use Docker with -e SATELLITE_TASK=task1
-
-        try:
-            with SatelliteEnv(base_url=ENV_URL).sync() as env:
-                r = run_episode(llm=llm, env=env, task=task)
-                results.append(r)
-        except Exception as exc:
-            print(f"  [ERROR] {task} failed: {exc}")
+    try:
+        with SatelliteEnv(base_url=ENV_URL).sync() as env:
+            for task in tasks:
+                print(f"\nRunning {task}...")
+                try:
+                    r = run_episode(llm=llm, env=env, task=task)
+                    results.append(r)
+                except Exception as exc:
+                    print(f"  [ERROR] {task} failed: {exc}")
+                    results.append({
+                        "task": task, "final_score": 0.0,
+                        "breakdown": {}, "error": str(exc),
+                    })
+    except Exception as exc:
+        print(f"  [ERROR] Connection failed: {exc}")
+        for task in tasks:
             results.append({
-                "task": task,
-                "final_score": 0.0,
-                "breakdown": {},
-                "error": str(exc),
+                "task": task, "final_score": 0.0,
+                "breakdown": {}, "error": str(exc),
             })
 
-    # ── Print results table ───────────────────────────────────
+    # Results table
     print(f"\n{'=' * 60}")
     print("  BASELINE RESULTS")
     print(f"{'=' * 60}")
-    print(f"  {'Task':<10}  {'Score':>7}  {'Steps':>6}  {'Reward':>8}  {'Time':>7}")
-    print(f"  {'─' * 10}  {'─' * 7}  {'─' * 6}  {'─' * 8}  {'─' * 7}")
+    print(f"  {'Task':<10}  {'Score':>7}  {'Steps':>6}  {'LLM':>5}  {'Reward':>8}  {'Time':>7}")
+    print(f"  {'─'*10}  {'─'*7}  {'─'*6}  {'─'*5}  {'─'*8}  {'─'*7}")
 
     for r in results:
         score = r.get("final_score", 0.0)
         steps = r.get("steps", 0)
+        calls = r.get("llm_calls", 0)
         rew = r.get("total_reward", 0.0)
         dur = r.get("duration_s", 0.0)
         err = "  ERROR" if "error" in r else ""
-        print(f"  {r['task']:<10}  {score:>7.4f}  {steps:>6}  {rew:>8.4f}  {dur:>6.1f}s{err}")
+        print(f"  {r['task']:<10}  {score:>7.4f}  {steps:>6}  {calls:>5}  {rew:>8.4f}  {dur:>6.1f}s{err}")
 
     print(f"\n  Model:  {MODEL_NAME}")
     print(f"  Seed:   {SEED}")
 
-    # ── Detailed breakdown ────────────────────────────────────
+    # Breakdown
     print(f"\n{'=' * 60}")
     print("  SCORE BREAKDOWNS")
     print(f"{'=' * 60}")
@@ -441,11 +345,7 @@ def main() -> None:
             print(f"    priority_efficiency:  {bd['priority_efficiency']:.4f}")
         if "emergency_score" in bd:
             print(f"    emergency_score:      {bd['emergency_score']:.4f}")
-            print(f"    delay_penalties:      {bd['delay_penalties']:.4f}")
-            print(f"    base_score:           {bd['base_score']:.4f}")
 
-    # ── Exit code for CI ──────────────────────────────────────
-    # Non-zero exit if any task scored 0.0 (likely a connection error)
     if any(r.get("final_score", 0.0) == 0.0 for r in results):
         print("\n  [warn] One or more tasks scored 0.0 — check server connection.")
         sys.exit(1)

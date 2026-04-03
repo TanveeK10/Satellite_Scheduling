@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+ENV/
+
+# IDEs
+.idea/
+.vscode/
+
+# Data & Output (local testing)
+eval_output.txt
+quick_test.py
+*.log
+
+# Environment variables
+.env

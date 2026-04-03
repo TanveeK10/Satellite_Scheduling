@@ -560,21 +560,21 @@ def compute_windows() -> list[dict]:
                 lq = elev_to_link_quality(elev)
                 rate = MAX_RATE_MBPS * (lq ** 1.5)
 
-                # Duration: higher elevation = longer usable arc
-                # A zenith pass (lq≈1) fills most of the 10-min tick.
-                # A grazing pass (lq≈0) is brief.
-                duration = max(60.0, TICK_MIN * 60 * lq)
+                # Duration is always one full 10-min tick.
+                duration_s = float(TICK_MIN * 60) # always 600s — always one full tick
+                window_id = f"w_s{sat_id}_g{gs_id}_t{tick:03d}"
 
                 windows.append({
+                    "window_id": window_id,
                     "tick": tick,
                     "satellite_id": sat_id,
                     "station_id": gs_id,
-                    "duration_s": round(duration, 1),
+                    "duration_s": round(duration_s, 1),
                     "max_rate_mbps": round(rate, 2),
                     "elevation_deg": round(elev, 2),
                     "link_quality": round(lq, 4),
                     # Pre-compute max downloadable bytes for this window
-                    "max_bytes": int(rate * 1e6 / 8 * duration),
+                    "max_bytes": int(rate * 1e6 / 8 * duration_s),
                 })
 
     return windows

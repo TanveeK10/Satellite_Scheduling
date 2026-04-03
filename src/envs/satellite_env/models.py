@@ -41,10 +41,10 @@ class PassWindowModel(Observation):
     station_id: int = Field(..., ge=0, le=3)
     tick: int = Field(..., ge=0, lt=144, description="Tick this window is active")
     duration_s: float = Field(..., gt=0, description="Seconds the link is open")
-    max_rate_mbps: float = Field(..., gt=0, description="Peak link rate at this elevation")
+    max_rate_mbps: float = Field(..., ge=0, description="Peak link rate at this elevation")
     elevation_deg: float = Field(..., ge=5.0, le=90.0)
     link_quality: float = Field(..., ge=0.0, le=1.0)
-    max_bytes: int = Field(..., gt=0, description="Max downloadable bytes, clear sky")
+    max_bytes: int = Field(..., ge=0, description="Max downloadable bytes, clear sky")
 
 
 class DataChunkModel(Observation):
@@ -61,7 +61,7 @@ class DataChunkModel(Observation):
     """
     chunk_id: str = Field(..., description="Unique chunk identifier")
     priority: int = Field(..., ge=1, le=3)
-    size_bytes: int = Field(..., gt=0)
+    size_bytes: int = Field(..., ge=0)
     injected_at_min: int = Field(0, ge=0, description="0 = pre-loaded at episode start")
     deadline_min: Optional[int] = Field(None, description="Hard deadline — priority-3 only")
 

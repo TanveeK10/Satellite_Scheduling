@@ -245,13 +245,13 @@ python inference.py
 ### Run with Docker
 ```bash
 # Build
-docker build -t satellite-env:latest \
+docker build -t satellite-.env:latest \
     -f src/envs/satellite_env/server/Dockerfile .
 
 # Run
 docker run -d -p 8000:7860 \
     -e SATELLITE_TASK=task1 \
-    satellite-env:latest
+    satellite-.env:latest
 
 # Health check
 curl http://localhost:8000/health
@@ -259,8 +259,8 @@ curl http://localhost:8000/health
 
 ### Switch tasks
 ```bash
-# Server picks task from env var — no rebuild needed
-docker run -d -p 8000:7860 -e SATELLITE_TASK=task3 satellite-env:latest
+# Server picks task from .env var — no rebuild needed
+docker run -d -p 8000:7860 -e SATELLITE_TASK=task3 satellite-.env:latest
 ```
 
 ### Use the client directly

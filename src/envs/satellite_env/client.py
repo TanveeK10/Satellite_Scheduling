@@ -18,10 +18,6 @@ Usage (async — for training loops):
         result = await env.reset()
         result = await env.step(SatelliteAction(action_type="noop"))
 
-From Docker image (auto-starts container):
-    async with await SatelliteEnv.from_docker_image("satellite-env:latest") as env:
-        result = await env.reset()
-
 From HF Space:
     async with SatelliteEnv(base_url="https://your-name-satellite-env.hf.space") as env:
         result = await env.reset()
@@ -39,14 +35,13 @@ from src.envs.satellite_env.models import (
     SatelliteObservation,
     ScheduleEntryModel,
 )
-from src.envs.satellite_env.server.environment import SatelliteState
 
 
-class SatelliteEnv(EnvClient[SatelliteAction, SatelliteObservation, SatelliteState]):
+class SatelliteEnv(EnvClient[SatelliteAction, SatelliteObservation, dict]):
     """
     Typed client for the SatelliteEnvironment server.
 
-    Inherits from EnvClient which handles:
+    Inherits from HTTPEnvClient which handles:
         - WebSocket connection lifecycle
         - Reconnection and error handling
         - .sync() wrapper for synchronous usage
@@ -56,7 +51,7 @@ class SatelliteEnv(EnvClient[SatelliteAction, SatelliteObservation, SatelliteSta
     We only implement three methods:
         _step_payload  — Action → JSON dict (sent to server)
         _parse_result  — JSON dict → StepResult[SatelliteObservation]
-        _parse_state   — JSON dict → SatelliteState
+        _parse_state   — JSON dict → SatelliteState (dict form)
     """
 
     # ------------------------------------------------------------------
@@ -135,37 +130,13 @@ class SatelliteEnv(EnvClient[SatelliteAction, SatelliteObservation, SatelliteSta
         )
 
     # ------------------------------------------------------------------
-    # Required: deserialize state response → SatelliteState
+    # Required: deserialize state response → dict (SatelliteState)
     # ------------------------------------------------------------------
 
-    def _parse_state(self, payload: dict) -> SatelliteState:
+    def _parse_state(self, payload: dict) -> dict:
         """
         Parse the JSON payload from GET /state.
-        SatelliteState is a dataclass — construct directly from payload keys.
-        Missing keys fall back to SatelliteState defaults.
+        Returns the state as a plain dict — the server serialises
+        SatelliteState automatically, so keys match the dataclass fields.
         """
-        return SatelliteState(
-            episode_id=payload.get("episode_id", ""),
-            step_count=payload.get("step_count", 0),
-            task=payload.get("task", "task1"),
-            current_time_min=payload.get("current_time_min", 0),
-            done=payload.get("done", False),
-            total_reward=payload.get("total_reward", 0.0),
-            seed=payload.get("seed", 42),
-            final_score=payload.get("final_score", 0.0),
-        )
-
-    # Add to client.py, inside SatelliteEnv class:
-
-    def get_episode_data(self) -> dict:
-        """
-        Public accessor for grader data at episode end.
-        Returns download_log, all_chunks, and injections
-        without exposing private internals.
-        """
-        env = self._env  # type: ignore[attr-defined]
-        return {
-            "download_log": env._scheduler.get_download_log(),
-            "all_chunks": env._all_initial_chunks(),
-            "emergency_injections": env._injections,
-        }
+        return payload

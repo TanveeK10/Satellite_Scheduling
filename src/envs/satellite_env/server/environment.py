@@ -23,7 +23,9 @@ import uuid
 from dataclasses import dataclass, field
 from typing import Dict, List, Optional
 
+from pydantic import Field as PydanticField
 from openenv.core.env_server import Environment
+from openenv.core.env_server.types import State
 
 from src.envs.satellite_env.models import (
     DataChunkModel,
@@ -36,25 +38,30 @@ from src.envs.satellite_env.server.weather import WeatherSampler
 
 
 # ─────────────────────────────────────────────────────────────
-# State dataclass (episode-level metadata)
+# State model (episode-level metadata) — must be Pydantic
+# because the server calls state.model_dump() to serialize it.
 # ─────────────────────────────────────────────────────────────
 
-@dataclass
-class SatelliteState:
+class SatelliteState(State):
     """
     Episode metadata returned by state().
     Judges and the inference script use this to inspect progress
     without re-parsing the full observation.
+
+    Inherits from openenv State which provides:
+        episode_id: Optional[str]
+        step_count: int
     """
-    episode_id: str = field(default_factory=lambda: str(uuid.uuid4()))
-    step_count: int = 0
-    task: str = "task1"
-    current_time_min: int = 0
-    done: bool = False
-    total_reward: float = 0.0
-    seed: int = 42
+    task: str = PydanticField(default="task1")
+    current_time_min: int = PydanticField(default=0)
+    done: bool = PydanticField(default=False)
+    total_reward: float = PydanticField(default=0.0)
+    seed: int = PydanticField(default=42)
     # Grader score updated at episode end
-    final_score: float = 0.0
+    final_score: float = PydanticField(default=0.0)
+    # Detailed breakdown — populated on episode end so remote clients
+    # can print results without importing server-internal graders.
+    breakdown: dict = PydanticField(default_factory=dict)
 
 
 # ─────────────────────────────────────────────────────────────
@@ -77,7 +84,7 @@ class SatelliteEnvironment(Environment):
     Full satellite downlink scheduling environment.
 
     Construction:
-        env = SatelliteEnvironment(task="task2", seed=42)
+        .env = SatelliteEnvironment(task="task2", seed=42)
 
     The task controls:
         task1 — 2 satellites, 2 stations, clear weather
@@ -85,11 +92,11 @@ class SatelliteEnvironment(Environment):
         task3 — task2 + emergency chunk injections at t=240 and t=480
 
     Episode lifecycle:
-        obs        = env.reset()
+        obs        = .env.reset()
         while not obs.done:
             action = agent.decide(obs)
-            obs    = env.step(action)
-        score = env.state.final_score
+            obs    = .env.step(action)
+        score = .env.state.final_score
     """
 
     def __init__(self, task: str = "task1", seed: int = 42) -> None:
@@ -135,19 +142,52 @@ class SatelliteEnvironment(Environment):
     # OpenEnv interface — three required methods
     # ------------------------------------------------------------------
 
-    def reset(self) -> SatelliteObservation:  # type: ignore[override]
+    def reset(
+        self,
+        seed: Optional[int] = None,
+        episode_id: Optional[str] = None,
+        **kwargs,
+    ) -> SatelliteObservation:  # type: ignore[override]
         """
         Start a fresh episode.
+
+        Optional kwargs (passed from client via env.reset(task="task2")):
+            task: str  — switch task without restarting the server
+            seed: int  — override the random seed
 
         - Reseeds weather sampler
         - Restores all satellite queues to initial state
         - Clears the schedule
         - Returns tick-0 observation
         """
+        # Allow task switching via reset kwargs
+        new_task = kwargs.get("task", self._task)
+        new_seed = seed if seed is not None else self._seed
+
+        # If task or seed changed, reload the scenario
+        if new_task != self._task or new_seed != self._seed:
+            self._task = new_task
+            self._seed = new_seed
+            scenario_path = DATA_DIR / "scenarios" / f"{new_task}_seed{new_seed}.json"
+            if not scenario_path.exists():
+                raise FileNotFoundError(
+                    f"Scenario file not found: {scenario_path}\n"
+                    f"Run scripts/generate_windows.py first."
+                )
+            self._scenario = json.loads(scenario_path.read_text())
+            self._all_windows = self._scenario["pass_windows"]
+            self._active_sats = self._scenario["active_satellites"]
+            self._active_stations = self._scenario["active_stations"]
+            self._sat_meta = self._scenario["satellite_meta"]
+            self._injections = self._scenario.get("emergency_injections", [])
+            self._normalizer = self._compute_normalizer()
+            # Rebuild subsystems with new scenario
+            self._boot()
+
         self._tick = 0
         self._done = False
         self._total_reward = 0.0
-        self._episode_id = str(uuid.uuid4())
+        self._episode_id = episode_id or str(uuid.uuid4())
         self._injected_ids = set()
 
         self._weather.reset()
@@ -267,6 +307,15 @@ class SatelliteEnvironment(Environment):
     @property
     def state(self) -> SatelliteState:
         """Episode metadata snapshot. Safe to call at any point."""
+        breakdown = {}
+        if self._done and getattr(self, "_final_score", 0.0) > 0:
+            from src.envs.satellite_env.server.graders import grade_breakdown
+            breakdown = grade_breakdown(
+                task=self._task,
+                download_log=self._scheduler.get_download_log(),
+                all_chunks=self._all_initial_chunks(),
+                emergency_injections=self._injections,
+            )
         return SatelliteState(
             episode_id=self._episode_id,
             step_count=self._tick,
@@ -276,6 +325,7 @@ class SatelliteEnvironment(Environment):
             total_reward=round(self._total_reward, 6),
             seed=self._seed,
             final_score=getattr(self, "_final_score", 0.0),
+            breakdown=breakdown,
         )
 
     # ------------------------------------------------------------------
@@ -306,6 +356,7 @@ class SatelliteEnvironment(Environment):
         self._scheduler = Scheduler(
             initial_queues=initial_queues,
             downlink_rates_bps=downlink_rates,
+            windows=self._all_windows,
         )
 
         # Run reset to set tick / done / reward to initial values

@@ -760,516 +760,568 @@
   },
   "pass_windows": [
     {
+      "window_id": "w_s1_g3_t003",
       "tick": 3,
       "satellite_id": 1,
       "station_id": 3,
-      "duration_s": 136.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 16.34,
       "elevation_deg": 14.12,
       "link_quality": 0.2281,
-      "max_bytes": 279548460
+      "max_bytes": 1225561958
     },
     {
+      "window_id": "w_s5_g0_t003",
       "tick": 3,
       "satellite_id": 5,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 4.27,
       "elevation_deg": 8.73,
       "link_quality": 0.0932,
-      "max_bytes": 32019733
+      "max_bytes": 320197339
     },
     {
+      "window_id": "w_s5_g3_t003",
       "tick": 3,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 108.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 11.57,
       "elevation_deg": 12.25,
       "link_quality": 0.1812,
-      "max_bytes": 157261612
+      "max_bytes": 867829969
     },
     {
+      "window_id": "w_s6_g3_t003",
       "tick": 3,
       "satellite_id": 6,
       "station_id": 3,
-      "duration_s": 200.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 28.95,
       "elevation_deg": 18.36,
       "link_quality": 0.3339,
-      "max_bytes": 724963254
+      "max_bytes": 2170953922
     },
     {
+      "window_id": "w_s7_g0_t003",
       "tick": 3,
       "satellite_id": 7,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 4.22,
       "elevation_deg": 8.7,
       "link_quality": 0.0925,
-      "max_bytes": 31643706
+      "max_bytes": 316437065
     },
     {
+      "window_id": "w_s7_g3_t003",
       "tick": 3,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 110.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 11.82,
       "elevation_deg": 12.35,
       "link_quality": 0.1838,
-      "max_bytes": 162872028
+      "max_bytes": 886275841
     },
     {
+      "window_id": "w_s2_g3_t004",
       "tick": 4,
       "satellite_id": 2,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.4,
       "elevation_deg": 5.77,
       "link_quality": 0.0192,
-      "max_bytes": 2982456
+      "max_bytes": 29824569
     },
     {
+      "window_id": "w_s3_g3_t004",
       "tick": 4,
       "satellite_id": 3,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.7,
       "elevation_deg": 6.12,
       "link_quality": 0.028,
-      "max_bytes": 5265429
+      "max_bytes": 52654291
     },
     {
+      "window_id": "w_s2_g0_t005",
       "tick": 5,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.63,
       "elevation_deg": 6.04,
       "link_quality": 0.026,
-      "max_bytes": 4716684
+      "max_bytes": 47166849
     },
     {
+      "window_id": "w_s3_g0_t005",
       "tick": 5,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.83,
       "elevation_deg": 6.25,
       "link_quality": 0.0313,
-      "max_bytes": 6215396
+      "max_bytes": 62153964
     },
     {
+      "window_id": "w_s4_g0_t005",
       "tick": 5,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.45,
       "elevation_deg": 5.84,
       "link_quality": 0.0209,
-      "max_bytes": 3395658
+      "max_bytes": 33956587
     },
     {
+      "window_id": "w_s5_g2_t005",
       "tick": 5,
       "satellite_id": 5,
       "station_id": 2,
-      "duration_s": 121.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 13.62,
       "elevation_deg": 13.08,
       "link_quality": 0.202,
-      "max_bytes": 206439978
+      "max_bytes": 1021732697
     },
     {
+      "window_id": "w_s7_g2_t005",
       "tick": 5,
       "satellite_id": 7,
       "station_id": 2,
-      "duration_s": 117.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 13.03,
       "elevation_deg": 12.85,
       "link_quality": 0.1962,
-      "max_bytes": 191755622
+      "max_bytes": 977484486
     },
     {
+      "window_id": "w_s1_g2_t006",
       "tick": 6,
       "satellite_id": 1,
       "station_id": 2,
-      "duration_s": 120.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 13.54,
       "elevation_deg": 13.05,
       "link_quality": 0.2012,
-      "max_bytes": 204380314
+      "max_bytes": 1015604102
     },
     {
+      "window_id": "w_s6_g2_t006",
       "tick": 6,
       "satellite_id": 6,
       "station_id": 2,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 1.86,
       "elevation_deg": 7.14,
       "link_quality": 0.0536,
-      "max_bytes": 13949178
+      "max_bytes": 139491789
     },
     {
+      "window_id": "w_s2_g2_t007",
       "tick": 7,
       "satellite_id": 2,
       "station_id": 2,
-      "duration_s": 256.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 41.89,
       "elevation_deg": 22.09,
       "link_quality": 0.4273,
-      "max_bytes": 1342449468
+      "max_bytes": 3141953673
     },
     {
+      "window_id": "w_s3_g2_t007",
       "tick": 7,
       "satellite_id": 3,
       "station_id": 2,
-      "duration_s": 295.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 51.83,
       "elevation_deg": 24.7,
       "link_quality": 0.4924,
-      "max_bytes": 1913970650
+      "max_bytes": 3887068314
     },
     {
+      "window_id": "w_s4_g2_t007",
       "tick": 7,
       "satellite_id": 4,
       "station_id": 2,
-      "duration_s": 205.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 30.08,
       "elevation_deg": 18.7,
       "link_quality": 0.3426,
-      "max_bytes": 772969786
+      "max_bytes": 2256100908
     },
     {
+      "window_id": "w_s5_g1_t008",
       "tick": 8,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 3.98,
       "elevation_deg": 8.56,
       "link_quality": 0.0889,
-      "max_bytes": 29812773
+      "max_bytes": 298127736
     },
     {
+      "window_id": "w_s7_g1_t008",
       "tick": 8,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 3.94,
       "elevation_deg": 8.54,
       "link_quality": 0.0884,
-      "max_bytes": 29570662
+      "max_bytes": 295706629
     },
     {
+      "window_id": "w_s5_g3_t012",
       "tick": 12,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.05,
       "elevation_deg": 5.18,
       "link_quality": 0.0045,
-      "max_bytes": 337749
+      "max_bytes": 3377491
     },
     {
+      "window_id": "w_s7_g3_t012",
       "tick": 12,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.01,
       "elevation_deg": 5.06,
       "link_quality": 0.0016,
-      "max_bytes": 70717
+      "max_bytes": 707171
     },
     {
+      "window_id": "w_s1_g3_t013",
       "tick": 13,
       "satellite_id": 1,
       "station_id": 3,
-      "duration_s": 461.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 101.33,
       "elevation_deg": 35.8,
       "link_quality": 0.7699,
-      "max_bytes": 5850806497
+      "max_bytes": 7599595029
     },
     {
+      "window_id": "w_s5_g0_t013",
       "tick": 13,
       "satellite_id": 5,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 1.67,
       "elevation_deg": 6.99,
       "link_quality": 0.0499,
-      "max_bytes": 12523528
+      "max_bytes": 125235281
     },
     {
+      "window_id": "w_s5_g3_t013",
       "tick": 13,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 151.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 18.98,
       "elevation_deg": 15.08,
       "link_quality": 0.2521,
-      "max_bytes": 358930104
+      "max_bytes": 1423858853
     },
     {
+      "window_id": "w_s6_g3_t013",
       "tick": 13,
       "satellite_id": 6,
       "station_id": 3,
-      "duration_s": 440.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 94.46,
       "elevation_deg": 34.39,
       "link_quality": 0.7347,
-      "max_bytes": 5205346419
+      "max_bytes": 7084852147
     },
     {
+      "window_id": "w_s7_g0_t013",
       "tick": 13,
       "satellite_id": 7,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 1.6,
       "elevation_deg": 6.94,
       "link_quality": 0.0485,
-      "max_bytes": 11997632
+      "max_bytes": 119976329
     },
     {
+      "window_id": "w_s7_g3_t013",
       "tick": 13,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 153.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 19.33,
       "elevation_deg": 15.21,
       "link_quality": 0.2552,
-      "max_bytes": 369958802
+      "max_bytes": 1449950006
     },
     {
+      "window_id": "w_s1_g0_t014",
       "tick": 14,
       "satellite_id": 1,
       "station_id": 0,
-      "duration_s": 65.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 5.35,
       "elevation_deg": 9.34,
       "link_quality": 0.1084,
-      "max_bytes": 43516569
+      "max_bytes": 401470650
     },
     {
+      "window_id": "w_s2_g3_t014",
       "tick": 14,
       "satellite_id": 2,
       "station_id": 3,
-      "duration_s": 431.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 91.52,
       "elevation_deg": 33.77,
       "link_quality": 0.7193,
-      "max_bytes": 4937302780
+      "max_bytes": 6863645833
     },
     {
+      "window_id": "w_s3_g3_t014",
       "tick": 14,
       "satellite_id": 3,
       "station_id": 3,
-      "duration_s": 453.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 98.57,
       "elevation_deg": 35.23,
       "link_quality": 0.7559,
-      "max_bytes": 5588182904
+      "max_bytes": 7393045455
     },
     {
+      "window_id": "w_s4_g3_t014",
       "tick": 14,
       "satellite_id": 4,
       "station_id": 3,
-      "duration_s": 392.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 79.36,
       "elevation_deg": 31.17,
       "link_quality": 0.6541,
-      "max_bytes": 3893337886
+      "max_bytes": 5951881370
     },
     {
+      "window_id": "w_s6_g0_t014",
       "tick": 14,
       "satellite_id": 6,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.68,
       "elevation_deg": 6.09,
       "link_quality": 0.0273,
-      "max_bytes": 5086077
+      "max_bytes": 50860770
     },
     {
+      "window_id": "w_s2_g0_t015",
       "tick": 15,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 64.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 5.32,
       "elevation_deg": 9.32,
       "link_quality": 0.1079,
-      "max_bytes": 43031406
+      "max_bytes": 398779048
     },
     {
+      "window_id": "w_s3_g0_t015",
       "tick": 15,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 69.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 5.94,
       "elevation_deg": 9.65,
       "link_quality": 0.1162,
-      "max_bytes": 51747554
+      "max_bytes": 445445841
     },
     {
+      "window_id": "w_s4_g0_t015",
       "tick": 15,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 4.62,
       "elevation_deg": 8.93,
       "link_quality": 0.0982,
-      "max_bytes": 34616729
+      "max_bytes": 346167299
     },
     {
+      "window_id": "w_s5_g2_t015",
       "tick": 15,
       "satellite_id": 5,
       "station_id": 2,
-      "duration_s": 270.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 45.42,
       "elevation_deg": 23.04,
       "link_quality": 0.4509,
-      "max_bytes": 1535806749
+      "max_bytes": 3406143589
     },
     {
+      "window_id": "w_s6_g2_t015",
       "tick": 15,
       "satellite_id": 6,
       "station_id": 2,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 1.48,
       "elevation_deg": 6.84,
       "link_quality": 0.0461,
-      "max_bytes": 11128321
+      "max_bytes": 111283217
     },
     {
+      "window_id": "w_s7_g2_t015",
       "tick": 15,
       "satellite_id": 7,
       "station_id": 2,
-      "duration_s": 271.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 45.59,
       "elevation_deg": 23.08,
       "link_quality": 0.4521,
-      "max_bytes": 1545891587
+      "max_bytes": 3419545834
     },
     {
+      "window_id": "w_s0_g2_t016",
       "tick": 16,
       "satellite_id": 0,
       "station_id": 2,
-      "duration_s": 253.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 41.23,
       "elevation_deg": 21.91,
       "link_quality": 0.4227,
-      "max_bytes": 1307235699
+      "max_bytes": 3092241103
     },
     {
+      "window_id": "w_s1_g2_t016",
       "tick": 16,
       "satellite_id": 1,
       "station_id": 2,
-      "duration_s": 167.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 22.15,
       "elevation_deg": 16.18,
       "link_quality": 0.2794,
-      "max_bytes": 464128095
+      "max_bytes": 1661283395
     },
     {
+      "window_id": "w_s6_g2_t016",
       "tick": 16,
       "satellite_id": 6,
       "station_id": 2,
-      "duration_s": 66.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 5.58,
       "elevation_deg": 9.46,
       "link_quality": 0.1114,
-      "max_bytes": 46617254
+      "max_bytes": 418397444
     },
     {
+      "window_id": "w_s2_g2_t017",
       "tick": 17,
       "satellite_id": 2,
       "station_id": 2,
-      "duration_s": 73.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 6.39,
       "elevation_deg": 9.88,
       "link_quality": 0.1219,
-      "max_bytes": 58403437
+      "max_bytes": 478987361
     },
     {
+      "window_id": "w_s3_g2_t017",
       "tick": 17,
       "satellite_id": 3,
       "station_id": 2,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 4.28,
       "elevation_deg": 8.73,
       "link_quality": 0.0933,
-      "max_bytes": 32082965
+      "max_bytes": 320829658
     },
     {
+      "window_id": "w_s4_g2_t017",
       "tick": 17,
       "satellite_id": 4,
       "station_id": 2,
-      "duration_s": 105.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 11.03,
       "elevation_deg": 12.02,
       "link_quality": 0.1756,
-      "max_bytes": 145294387
+      "max_bytes": 827580620
     },
     {
+      "window_id": "w_s5_g1_t018",
       "tick": 18,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.25,
       "elevation_deg": 5.56,
       "link_quality": 0.014,
-      "max_bytes": 1858301
+      "max_bytes": 18583015
     },
     {
+      "window_id": "w_s7_g1_t018",
       "tick": 18,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.22,
       "elevation_deg": 5.52,
       "link_quality": 0.0129,
-      "max_bytes": 1648996
+      "max_bytes": 16489964
     },
     {
+      "window_id": "w_s1_g1_t019",
       "tick": 19,
       "satellite_id": 1,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 1.03,
       "elevation_deg": 6.44,
       "link_quality": 0.0361,
-      "max_bytes": 7701072
+      "max_bytes": 77010726
     },
     {
+      "window_id": "w_s3_g1_t020",
       "tick": 20,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.0,
       "elevation_deg": 5.04,
       "link_quality": 0.001,
-      "max_bytes": 33980
+      "max_bytes": 339802
     },
     {
+      "window_id": "w_s5_g3_t022",
       "tick": 22,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 1.8,
       "elevation_deg": 7.1,
       "link_quality": 0.0524,
-      "max_bytes": 13492202
+      "max_bytes": 134922027
     },
     {
+      "window_id": "w_s7_g3_t022",
       "tick": 22,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 1.69,
       "elevation_deg": 7.01,
       "link_quality": 0.0503,
-      "max_bytes": 12684927
+      "max_bytes": 126849277
     },
     {
+      "window_id": "w_s1_g3_t023",
       "tick": 23,
       "satellite_id": 1,
       "station_id": 3,
@@ -1280,16 +1332,18 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s5_g3_t023",
       "tick": 23,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 208.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 30.75,
       "elevation_deg": 18.91,
       "link_quality": 0.3477,
-      "max_bytes": 801757752
+      "max_bytes": 2306146589
     },
     {
+      "window_id": "w_s6_g3_t023",
       "tick": 23,
       "satellite_id": 6,
       "station_id": 3,
@@ -1300,426 +1354,469 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g3_t023",
       "tick": 23,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 210.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 31.21,
       "elevation_deg": 19.04,
       "link_quality": 0.3511,
-      "max_bytes": 821808041
+      "max_bytes": 2340578658
     },
     {
+      "window_id": "w_s1_g0_t024",
       "tick": 24,
       "satellite_id": 1,
       "station_id": 0,
-      "duration_s": 198.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 28.46,
       "elevation_deg": 18.21,
       "link_quality": 0.3302,
-      "max_bytes": 704809407
+      "max_bytes": 2134538655
     },
     {
+      "window_id": "w_s2_g3_t024",
       "tick": 24,
       "satellite_id": 2,
       "station_id": 3,
-      "duration_s": 560.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 135.35,
       "elevation_deg": 42.35,
       "link_quality": 0.9338,
-      "max_bytes": 9479448279
+      "max_bytes": 10151514652
     },
     {
+      "window_id": "w_s3_g3_t024",
       "tick": 24,
       "satellite_id": 3,
       "station_id": 3,
-      "duration_s": 548.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 131.07,
       "elevation_deg": 41.56,
       "link_quality": 0.914,
-      "max_bytes": 8984563814
+      "max_bytes": 9830128785
     },
     {
+      "window_id": "w_s4_g3_t024",
       "tick": 24,
       "satellite_id": 4,
       "station_id": 3,
-      "duration_s": 595.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 148.44,
       "elevation_deg": 44.72,
       "link_quality": 0.9931,
-      "max_bytes": 11055676135
+      "max_bytes": 11132999608
     },
     {
+      "window_id": "w_s5_g0_t024",
       "tick": 24,
       "satellite_id": 5,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 4.33,
       "elevation_deg": 8.76,
       "link_quality": 0.094,
-      "max_bytes": 32438286
+      "max_bytes": 324382863
     },
     {
+      "window_id": "w_s6_g0_t024",
       "tick": 24,
       "satellite_id": 6,
       "station_id": 0,
-      "duration_s": 168.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 22.38,
       "elevation_deg": 16.25,
       "link_quality": 0.2813,
-      "max_bytes": 472209770
+      "max_bytes": 1678579791
     },
     {
+      "window_id": "w_s7_g0_t024",
       "tick": 24,
       "satellite_id": 7,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 4.33,
       "elevation_deg": 8.76,
       "link_quality": 0.0941,
-      "max_bytes": 32459184
+      "max_bytes": 324591841
     },
     {
+      "window_id": "w_s2_g0_t025",
       "tick": 25,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 150.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 18.76,
       "elevation_deg": 15.0,
       "link_quality": 0.25,
-      "max_bytes": 351727093
+      "max_bytes": 1406644986
     },
     {
+      "window_id": "w_s3_g0_t025",
       "tick": 25,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 157.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 20.2,
       "elevation_deg": 15.51,
       "link_quality": 0.2627,
-      "max_bytes": 397997901
+      "max_bytes": 1514919230
     },
     {
+      "window_id": "w_s4_g0_t025",
       "tick": 25,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 141.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 17.13,
       "elevation_deg": 14.42,
       "link_quality": 0.2354,
-      "max_bytes": 302411211
+      "max_bytes": 1284753298
     },
     {
+      "window_id": "w_s1_g1_t029",
       "tick": 29,
       "satellite_id": 1,
       "station_id": 1,
-      "duration_s": 121.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 13.66,
       "elevation_deg": 13.09,
       "link_quality": 0.2024,
-      "max_bytes": 207255368
+      "max_bytes": 1024152153
     },
     {
+      "window_id": "w_s5_g1_t029",
       "tick": 29,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 1.82,
       "elevation_deg": 7.11,
       "link_quality": 0.0529,
-      "max_bytes": 13672575
+      "max_bytes": 136725755
     },
     {
+      "window_id": "w_s6_g1_t029",
       "tick": 29,
       "satellite_id": 6,
       "station_id": 1,
-      "duration_s": 103.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 10.81,
       "elevation_deg": 11.93,
       "link_quality": 0.1731,
-      "max_bytes": 140315097
+      "max_bytes": 810445191
     },
     {
+      "window_id": "w_s7_g1_t029",
       "tick": 29,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 1.8,
       "elevation_deg": 7.1,
       "link_quality": 0.0524,
-      "max_bytes": 13510028
+      "max_bytes": 135100285
     },
     {
+      "window_id": "w_s2_g1_t030",
       "tick": 30,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 3.82,
       "elevation_deg": 8.46,
       "link_quality": 0.0865,
-      "max_bytes": 28617092
+      "max_bytes": 286170922
     },
     {
+      "window_id": "w_s3_g1_t030",
       "tick": 30,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 4.46,
       "elevation_deg": 8.84,
       "link_quality": 0.096,
-      "max_bytes": 33440870
+      "max_bytes": 334408709
     },
     {
+      "window_id": "w_s4_g1_t030",
       "tick": 30,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 3.11,
       "elevation_deg": 8.02,
       "link_quality": 0.0754,
-      "max_bytes": 23291749
+      "max_bytes": 232917495
     },
     {
+      "window_id": "w_s1_g3_t033",
       "tick": 33,
       "satellite_id": 1,
       "station_id": 3,
-      "duration_s": 274.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 46.29,
       "elevation_deg": 23.27,
       "link_quality": 0.4566,
-      "max_bytes": 1585262163
+      "max_bytes": 3471535938
     },
     {
+      "window_id": "w_s5_g3_t033",
       "tick": 33,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 166.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 21.84,
       "elevation_deg": 16.07,
       "link_quality": 0.2768,
-      "max_bytes": 453375833
+      "max_bytes": 1638083475
     },
     {
+      "window_id": "w_s6_g3_t033",
       "tick": 33,
       "satellite_id": 6,
       "station_id": 3,
-      "duration_s": 264.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 44.01,
       "elevation_deg": 22.66,
       "link_quality": 0.4416,
-      "max_bytes": 1457699471
+      "max_bytes": 3301123762
     },
     {
+      "window_id": "w_s7_g3_t033",
       "tick": 33,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 167.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 22.11,
       "elevation_deg": 16.16,
       "link_quality": 0.279,
-      "max_bytes": 462641495
+      "max_bytes": 1658088696
     },
     {
+      "window_id": "w_s1_g0_t034",
       "tick": 34,
       "satellite_id": 1,
       "station_id": 0,
-      "duration_s": 381.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 75.99,
       "elevation_deg": 30.42,
       "link_quality": 0.6355,
-      "max_bytes": 3621732217
+      "max_bytes": 5699159490
     },
     {
+      "window_id": "w_s2_g3_t034",
       "tick": 34,
       "satellite_id": 2,
       "station_id": 3,
-      "duration_s": 105.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 11.11,
       "elevation_deg": 12.06,
       "link_quality": 0.1764,
-      "max_bytes": 147037027
+      "max_bytes": 833521944
     },
     {
+      "window_id": "w_s3_g3_t034",
       "tick": 34,
       "satellite_id": 3,
       "station_id": 3,
-      "duration_s": 100.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 10.22,
       "elevation_deg": 11.67,
       "link_quality": 0.1668,
-      "max_bytes": 127882759
+      "max_bytes": 766563628
     },
     {
+      "window_id": "w_s4_g3_t034",
       "tick": 34,
       "satellite_id": 4,
       "station_id": 3,
-      "duration_s": 117.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 13.06,
       "elevation_deg": 12.86,
       "link_quality": 0.1964,
-      "max_bytes": 192359865
+      "max_bytes": 979331419
     },
     {
+      "window_id": "w_s5_g0_t034",
       "tick": 34,
       "satellite_id": 5,
       "station_id": 0,
-      "duration_s": 278.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 47.34,
       "elevation_deg": 23.54,
       "link_quality": 0.4636,
-      "max_bytes": 1646005330
+      "max_bytes": 3550747184
     },
     {
+      "window_id": "w_s6_g0_t034",
       "tick": 34,
       "satellite_id": 6,
       "station_id": 0,
-      "duration_s": 397.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 80.82,
       "elevation_deg": 31.49,
       "link_quality": 0.6621,
-      "max_bytes": 4013625523
+      "max_bytes": 6061542001
     },
     {
+      "window_id": "w_s7_g0_t034",
       "tick": 34,
       "satellite_id": 7,
       "station_id": 0,
-      "duration_s": 277.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 47.29,
       "elevation_deg": 23.53,
       "link_quality": 0.4632,
-      "max_bytes": 1643197970
+      "max_bytes": 3547112338
     },
     {
+      "window_id": "w_s2_g0_t035",
       "tick": 35,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 218.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 33.02,
       "elevation_deg": 19.58,
       "link_quality": 0.3646,
-      "max_bytes": 902854478
+      "max_bytes": 2476461969
     },
     {
+      "window_id": "w_s3_g0_t035",
       "tick": 35,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 226.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 34.72,
       "elevation_deg": 20.08,
       "link_quality": 0.377,
-      "max_bytes": 981882005
+      "max_bytes": 2604333453
     },
     {
+      "window_id": "w_s4_g0_t035",
       "tick": 35,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 211.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 31.48,
       "elevation_deg": 19.13,
       "link_quality": 0.3532,
-      "max_bytes": 833919459
+      "max_bytes": 2361214675
     },
     {
+      "window_id": "w_s1_g1_t039",
       "tick": 39,
       "satellite_id": 1,
       "station_id": 1,
-      "duration_s": 242.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 38.46,
       "elevation_deg": 21.14,
       "link_quality": 0.4036,
-      "max_bytes": 1164191871
+      "max_bytes": 2884534559
     },
     {
+      "window_id": "w_s5_g1_t039",
       "tick": 39,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 230.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 35.78,
       "elevation_deg": 20.38,
       "link_quality": 0.3846,
-      "max_bytes": 1032122229
+      "max_bytes": 2683488188
     },
     {
+      "window_id": "w_s6_g1_t039",
       "tick": 39,
       "satellite_id": 6,
       "station_id": 1,
-      "duration_s": 262.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 43.29,
       "elevation_deg": 22.47,
       "link_quality": 0.4367,
-      "max_bytes": 1417741763
+      "max_bytes": 3246529015
     },
     {
+      "window_id": "w_s7_g1_t039",
       "tick": 39,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 229.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 35.57,
       "elevation_deg": 20.33,
       "link_quality": 0.3831,
-      "max_bytes": 1022135294
+      "max_bytes": 2667878454
     },
     {
+      "window_id": "w_s2_g1_t040",
       "tick": 40,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 114.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 12.52,
       "elevation_deg": 12.64,
       "link_quality": 0.191,
-      "max_bytes": 179314338
+      "max_bytes": 938923089
     },
     {
+      "window_id": "w_s3_g1_t040",
       "tick": 40,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 120.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 13.55,
       "elevation_deg": 13.05,
       "link_quality": 0.2014,
-      "max_bytes": 204715816
+      "max_bytes": 1016604078
     },
     {
+      "window_id": "w_s4_g1_t040",
       "tick": 40,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 107.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 11.38,
       "elevation_deg": 12.17,
       "link_quality": 0.1792,
-      "max_bytes": 152909125
+      "max_bytes": 853337933
     },
     {
+      "window_id": "w_s5_g3_t043",
       "tick": 43,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.65,
       "elevation_deg": 6.06,
       "link_quality": 0.0264,
-      "max_bytes": 4838989
+      "max_bytes": 48389897
     },
     {
+      "window_id": "w_s6_g3_t043",
       "tick": 43,
       "satellite_id": 6,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.22,
       "elevation_deg": 5.52,
       "link_quality": 0.0129,
-      "max_bytes": 1646350
+      "max_bytes": 16463505
     },
     {
+      "window_id": "w_s7_g3_t043",
       "tick": 43,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.68,
       "elevation_deg": 6.1,
       "link_quality": 0.0274,
-      "max_bytes": 5100488
+      "max_bytes": 51004883
     },
     {
+      "window_id": "w_s1_g0_t044",
       "tick": 44,
       "satellite_id": 1,
       "station_id": 0,
@@ -1730,6 +1827,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s5_g0_t044",
       "tick": 44,
       "satellite_id": 5,
       "station_id": 0,
@@ -1740,6 +1838,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s6_g0_t044",
       "tick": 44,
       "satellite_id": 6,
       "station_id": 0,
@@ -1750,6 +1849,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g0_t044",
       "tick": 44,
       "satellite_id": 7,
       "station_id": 0,
@@ -1760,106 +1860,117 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s2_g0_t045",
       "tick": 45,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 143.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 17.58,
       "elevation_deg": 14.58,
       "link_quality": 0.2395,
-      "max_bytes": 315702009
+      "max_bytes": 1318339962
     },
     {
+      "window_id": "w_s3_g0_t045",
       "tick": 45,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 144.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 17.71,
       "elevation_deg": 14.63,
       "link_quality": 0.2407,
-      "max_bytes": 319701679
+      "max_bytes": 1328336050
     },
     {
+      "window_id": "w_s4_g0_t045",
       "tick": 45,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 146.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 18.0,
       "elevation_deg": 14.73,
       "link_quality": 0.2433,
-      "max_bytes": 328488121
+      "max_bytes": 1350121367
     },
     {
+      "window_id": "w_s1_g1_t049",
       "tick": 49,
       "satellite_id": 1,
       "station_id": 1,
-      "duration_s": 374.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 73.86,
       "elevation_deg": 29.94,
       "link_quality": 0.6235,
-      "max_bytes": 3453891721
+      "max_bytes": 5539189717
     },
     {
+      "window_id": "w_s5_g1_t049",
       "tick": 49,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 525.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 122.87,
       "elevation_deg": 40.02,
       "link_quality": 0.8755,
-      "max_bytes": 8067479002
+      "max_bytes": 9215177719
     },
     {
+      "window_id": "w_s6_g1_t049",
       "tick": 49,
       "satellite_id": 6,
       "station_id": 1,
-      "duration_s": 444.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 95.51,
       "elevation_deg": 34.61,
       "link_quality": 0.7402,
-      "max_bytes": 5302162543
+      "max_bytes": 7163624801
     },
     {
+      "window_id": "w_s7_g1_t049",
       "tick": 49,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 522.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 121.94,
       "elevation_deg": 39.84,
       "link_quality": 0.871,
-      "max_bytes": 7965664649
+      "max_bytes": 9145221323
     },
     {
+      "window_id": "w_s2_g1_t050",
       "tick": 50,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 110.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 11.84,
       "elevation_deg": 12.36,
       "link_quality": 0.184,
-      "max_bytes": 163436157
+      "max_bytes": 888116410
     },
     {
+      "window_id": "w_s3_g1_t050",
       "tick": 50,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 112.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 12.24,
       "elevation_deg": 12.53,
       "link_quality": 0.1881,
-      "max_bytes": 172729026
+      "max_bytes": 918079317
     },
     {
+      "window_id": "w_s4_g1_t050",
       "tick": 50,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 108.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 11.55,
       "elevation_deg": 12.24,
       "link_quality": 0.181,
-      "max_bytes": 156819424
+      "max_bytes": 866365047
     },
     {
+      "window_id": "w_s1_g0_t054",
       "tick": 54,
       "satellite_id": 1,
       "station_id": 0,
@@ -1870,36 +1981,40 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s2_g0_t054",
       "tick": 54,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 138.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 16.61,
       "elevation_deg": 14.22,
       "link_quality": 0.2306,
-      "max_bytes": 287328355
+      "max_bytes": 1245914102
     },
     {
+      "window_id": "w_s3_g0_t054",
       "tick": 54,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 141.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 17.08,
       "elevation_deg": 14.4,
       "link_quality": 0.2349,
-      "max_bytes": 301010526
+      "max_bytes": 1281179612
     },
     {
+      "window_id": "w_s4_g0_t054",
       "tick": 54,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 131.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 15.41,
       "elevation_deg": 13.78,
       "link_quality": 0.2194,
-      "max_bytes": 253592502
+      "max_bytes": 1155960127
     },
     {
+      "window_id": "w_s5_g0_t054",
       "tick": 54,
       "satellite_id": 5,
       "station_id": 0,
@@ -1910,6 +2025,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s6_g0_t054",
       "tick": 54,
       "satellite_id": 6,
       "station_id": 0,
@@ -1920,6 +2036,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g0_t054",
       "tick": 54,
       "satellite_id": 7,
       "station_id": 0,
@@ -1930,46 +2047,51 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s1_g1_t059",
       "tick": 59,
       "satellite_id": 1,
       "station_id": 1,
-      "duration_s": 490.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 110.93,
       "elevation_deg": 37.71,
       "link_quality": 0.8178,
-      "max_bytes": 6804154278
+      "max_bytes": 8320041649
     },
     {
+      "window_id": "w_s2_g1_t059",
       "tick": 59,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 132.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 15.53,
       "elevation_deg": 13.82,
       "link_quality": 0.2205,
-      "max_bytes": 256864065
+      "max_bytes": 1164884912
     },
     {
+      "window_id": "w_s3_g1_t059",
       "tick": 59,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 134.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 15.96,
       "elevation_deg": 13.98,
       "link_quality": 0.2245,
-      "max_bytes": 268759154
+      "max_bytes": 1196958156
     },
     {
+      "window_id": "w_s4_g1_t059",
       "tick": 59,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 126.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 14.51,
       "elevation_deg": 13.43,
       "link_quality": 0.2108,
-      "max_bytes": 229419935
+      "max_bytes": 1088528240
     },
     {
+      "window_id": "w_s5_g1_t059",
       "tick": 59,
       "satellite_id": 5,
       "station_id": 1,
@@ -1980,16 +2102,18 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s6_g1_t059",
       "tick": 59,
       "satellite_id": 6,
       "station_id": 1,
-      "duration_s": 571.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 139.51,
       "elevation_deg": 43.11,
       "link_quality": 0.9528,
-      "max_bytes": 9970097502
+      "max_bytes": 10463588510
     },
     {
+      "window_id": "w_s7_g1_t059",
       "tick": 59,
       "satellite_id": 7,
       "station_id": 1,
@@ -2000,36 +2124,40 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s2_g1_t060",
       "tick": 60,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.29,
       "elevation_deg": 5.62,
       "link_quality": 0.0154,
-      "max_bytes": 2146108
+      "max_bytes": 21461081
     },
     {
+      "window_id": "w_s3_g1_t060",
       "tick": 60,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.22,
       "elevation_deg": 5.51,
       "link_quality": 0.0128,
-      "max_bytes": 1637670
+      "max_bytes": 16376708
     },
     {
+      "window_id": "w_s4_g1_t060",
       "tick": 60,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.44,
       "elevation_deg": 5.82,
       "link_quality": 0.0206,
-      "max_bytes": 3324333
+      "max_bytes": 33243335
     },
     {
+      "window_id": "w_s1_g0_t064",
       "tick": 64,
       "satellite_id": 1,
       "station_id": 0,
@@ -2040,36 +2168,40 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s2_g0_t064",
       "tick": 64,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 463.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 101.88,
       "elevation_deg": 35.91,
       "link_quality": 0.7727,
-      "max_bytes": 5904056389
+      "max_bytes": 7641019483
     },
     {
+      "window_id": "w_s3_g0_t064",
       "tick": 64,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 472.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 104.67,
       "elevation_deg": 36.47,
       "link_quality": 0.7867,
-      "max_bytes": 6176185765
+      "max_bytes": 7850425907
     },
     {
+      "window_id": "w_s4_g0_t064",
       "tick": 64,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 447.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 96.74,
       "elevation_deg": 34.86,
       "link_quality": 0.7465,
-      "max_bytes": 5416046953
+      "max_bytes": 7255552040
     },
     {
+      "window_id": "w_s5_g0_t064",
       "tick": 64,
       "satellite_id": 5,
       "station_id": 0,
@@ -2080,6 +2212,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s6_g0_t064",
       "tick": 64,
       "satellite_id": 6,
       "station_id": 0,
@@ -2090,6 +2223,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g0_t064",
       "tick": 64,
       "satellite_id": 7,
       "station_id": 0,
@@ -2100,46 +2234,51 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s1_g1_t069",
       "tick": 69,
       "satellite_id": 1,
       "station_id": 1,
-      "duration_s": 579.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 142.37,
       "elevation_deg": 43.63,
       "link_quality": 0.9658,
-      "max_bytes": 10311953630
+      "max_bytes": 10677401651
     },
     {
+      "window_id": "w_s2_g1_t069",
       "tick": 69,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 428.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 90.51,
       "elevation_deg": 33.56,
       "link_quality": 0.7141,
-      "max_bytes": 4847066673
+      "max_bytes": 6788102713
     },
     {
+      "window_id": "w_s3_g1_t069",
       "tick": 69,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 436.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 92.99,
       "elevation_deg": 34.08,
       "link_quality": 0.727,
-      "max_bytes": 5070519280
+      "max_bytes": 6974169079
     },
     {
+      "window_id": "w_s4_g1_t069",
       "tick": 69,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 415.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 86.3,
       "elevation_deg": 32.67,
       "link_quality": 0.6917,
-      "max_bytes": 4477066932
+      "max_bytes": 6472277973
     },
     {
+      "window_id": "w_s5_g1_t069",
       "tick": 69,
       "satellite_id": 5,
       "station_id": 1,
@@ -2150,6 +2289,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s6_g1_t069",
       "tick": 69,
       "satellite_id": 6,
       "station_id": 1,
@@ -2160,6 +2300,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g1_t069",
       "tick": 69,
       "satellite_id": 7,
       "station_id": 1,
@@ -2170,6 +2311,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s1_g0_t074",
       "tick": 74,
       "satellite_id": 1,
       "station_id": 0,
@@ -2180,6 +2322,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s2_g0_t074",
       "tick": 74,
       "satellite_id": 2,
       "station_id": 0,
@@ -2190,6 +2333,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s3_g0_t074",
       "tick": 74,
       "satellite_id": 3,
       "station_id": 0,
@@ -2200,6 +2344,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s4_g0_t074",
       "tick": 74,
       "satellite_id": 4,
       "station_id": 0,
@@ -2210,6 +2355,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s5_g0_t074",
       "tick": 74,
       "satellite_id": 5,
       "station_id": 0,
@@ -2220,6 +2366,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s6_g0_t074",
       "tick": 74,
       "satellite_id": 6,
       "station_id": 0,
@@ -2230,6 +2377,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g0_t074",
       "tick": 74,
       "satellite_id": 7,
       "station_id": 0,
@@ -2240,6 +2388,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s1_g1_t079",
       "tick": 79,
       "satellite_id": 1,
       "station_id": 1,
@@ -2250,6 +2399,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s2_g1_t079",
       "tick": 79,
       "satellite_id": 2,
       "station_id": 1,
@@ -2260,6 +2410,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s3_g1_t079",
       "tick": 79,
       "satellite_id": 3,
       "station_id": 1,
@@ -2270,6 +2421,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s4_g1_t079",
       "tick": 79,
       "satellite_id": 4,
       "station_id": 1,
@@ -2280,16 +2432,18 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s5_g1_t079",
       "tick": 79,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 571.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 139.39,
       "elevation_deg": 43.09,
       "link_quality": 0.9523,
-      "max_bytes": 9955634231
+      "max_bytes": 10454478369
     },
     {
+      "window_id": "w_s6_g1_t079",
       "tick": 79,
       "satellite_id": 6,
       "station_id": 1,
@@ -2300,16 +2454,18 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g1_t079",
       "tick": 79,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 570.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 139.18,
       "elevation_deg": 43.05,
       "link_quality": 0.9513,
-      "max_bytes": 9930871930
+      "max_bytes": 10438868763
     },
     {
+      "window_id": "w_s1_g2_t082",
       "tick": 82,
       "satellite_id": 1,
       "station_id": 2,
@@ -2320,36 +2476,40 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s2_g2_t082",
       "tick": 82,
       "satellite_id": 2,
       "station_id": 2,
-      "duration_s": 347.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 66.08,
       "elevation_deg": 28.16,
       "link_quality": 0.579,
-      "max_bytes": 2869482047
+      "max_bytes": 4956134870
     },
     {
+      "window_id": "w_s3_g2_t082",
       "tick": 82,
       "satellite_id": 3,
       "station_id": 2,
-      "duration_s": 335.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 62.67,
       "elevation_deg": 27.36,
       "link_quality": 0.5589,
-      "max_bytes": 2627166944
+      "max_bytes": 4700603413
     },
     {
+      "window_id": "w_s4_g2_t082",
       "tick": 82,
       "satellite_id": 4,
       "station_id": 2,
-      "duration_s": 353.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 67.92,
       "elevation_deg": 28.59,
       "link_quality": 0.5896,
-      "max_bytes": 3003466431
+      "max_bytes": 5093715427
     },
     {
+      "window_id": "w_s5_g2_t082",
       "tick": 82,
       "satellite_id": 5,
       "station_id": 2,
@@ -2360,6 +2520,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s6_g2_t082",
       "tick": 82,
       "satellite_id": 6,
       "station_id": 2,
@@ -2370,6 +2531,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g2_t082",
       "tick": 82,
       "satellite_id": 7,
       "station_id": 2,
@@ -2380,6 +2542,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s1_g0_t084",
       "tick": 84,
       "satellite_id": 1,
       "station_id": 0,
@@ -2390,36 +2553,40 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s2_g0_t084",
       "tick": 84,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 257.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 42.24,
       "elevation_deg": 22.19,
       "link_quality": 0.4296,
-      "max_bytes": 1361107291
+      "max_bytes": 3168082082
     },
     {
+      "window_id": "w_s3_g0_t084",
       "tick": 84,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 250.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 40.43,
       "elevation_deg": 21.69,
       "link_quality": 0.4173,
-      "max_bytes": 1265232460
+      "max_bytes": 3032237428
     },
     {
+      "window_id": "w_s4_g0_t084",
       "tick": 84,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 267.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 44.58,
       "elevation_deg": 22.81,
       "link_quality": 0.4454,
-      "max_bytes": 1489055222
+      "max_bytes": 3343547454
     },
     {
+      "window_id": "w_s5_g0_t084",
       "tick": 84,
       "satellite_id": 5,
       "station_id": 0,
@@ -2430,6 +2597,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s6_g0_t084",
       "tick": 84,
       "satellite_id": 6,
       "station_id": 0,
@@ -2440,6 +2608,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g0_t084",
       "tick": 84,
       "satellite_id": 7,
       "station_id": 0,
@@ -2450,16 +2619,18 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s0_g2_t085",
       "tick": 85,
       "satellite_id": 0,
       "station_id": 2,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 1.68,
       "elevation_deg": 7.01,
       "link_quality": 0.0501,
-      "max_bytes": 12632985
+      "max_bytes": 126329855
     },
     {
+      "window_id": "w_s1_g1_t089",
       "tick": 89,
       "satellite_id": 1,
       "station_id": 1,
@@ -2470,46 +2641,51 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s2_g1_t089",
       "tick": 89,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 286.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 49.59,
       "elevation_deg": 24.12,
       "link_quality": 0.4781,
-      "max_bytes": 1778234502
+      "max_bytes": 3719241922
     },
     {
+      "window_id": "w_s3_g1_t089",
       "tick": 89,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 277.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 47.17,
       "elevation_deg": 23.5,
       "link_quality": 0.4624,
-      "max_bytes": 1635721167
+      "max_bytes": 3537419562
     },
     {
+      "window_id": "w_s4_g1_t089",
       "tick": 89,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 298.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 52.55,
       "elevation_deg": 24.88,
       "link_quality": 0.4969,
-      "max_bytes": 1958459930
+      "max_bytes": 3941030747
     },
     {
+      "window_id": "w_s5_g1_t089",
       "tick": 89,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 575.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 140.88,
       "elevation_deg": 43.36,
       "link_quality": 0.959,
-      "max_bytes": 10132902601
+      "max_bytes": 10565774314
     },
     {
+      "window_id": "w_s6_g1_t089",
       "tick": 89,
       "satellite_id": 6,
       "station_id": 1,
@@ -2520,46 +2696,51 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g1_t089",
       "tick": 89,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 575.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 140.76,
       "elevation_deg": 43.34,
       "link_quality": 0.9585,
-      "max_bytes": 10118450426
+      "max_bytes": 10556729995
     },
     {
+      "window_id": "w_s2_g0_t093",
       "tick": 93,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 74.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 6.56,
       "elevation_deg": 9.96,
       "link_quality": 0.1241,
-      "max_bytes": 61062308
+      "max_bytes": 491954502
     },
     {
+      "window_id": "w_s3_g0_t093",
       "tick": 93,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 78.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 7.07,
       "elevation_deg": 10.22,
       "link_quality": 0.1305,
-      "max_bytes": 69179454
+      "max_bytes": 530209236
     },
     {
+      "window_id": "w_s4_g0_t093",
       "tick": 93,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 70.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 6.06,
       "elevation_deg": 9.71,
       "link_quality": 0.1178,
-      "max_bytes": 53537398
+      "max_bytes": 454627149
     },
     {
+      "window_id": "w_s1_g0_t094",
       "tick": 94,
       "satellite_id": 1,
       "station_id": 0,
@@ -2570,56 +2751,62 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s2_g0_t094",
       "tick": 94,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 3.02,
       "elevation_deg": 7.96,
       "link_quality": 0.0739,
-      "max_bytes": 22622778
+      "max_bytes": 226227787
     },
     {
+      "window_id": "w_s2_g3_t094",
       "tick": 94,
       "satellite_id": 2,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.03,
       "elevation_deg": 5.15,
       "link_quality": 0.0037,
-      "max_bytes": 255425
+      "max_bytes": 2554255
     },
     {
+      "window_id": "w_s3_g0_t094",
       "tick": 94,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 2.62,
       "elevation_deg": 7.69,
       "link_quality": 0.0673,
-      "max_bytes": 19662637
+      "max_bytes": 196626375
     },
     {
+      "window_id": "w_s3_g3_t094",
       "tick": 94,
       "satellite_id": 3,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.19,
       "elevation_deg": 5.47,
       "link_quality": 0.0117,
-      "max_bytes": 1427652
+      "max_bytes": 14276523
     },
     {
+      "window_id": "w_s4_g0_t094",
       "tick": 94,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 3.42,
       "elevation_deg": 8.22,
       "link_quality": 0.0804,
-      "max_bytes": 25644208
+      "max_bytes": 256442083
     },
     {
+      "window_id": "w_s5_g0_t094",
       "tick": 94,
       "satellite_id": 5,
       "station_id": 0,
@@ -2630,6 +2817,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s6_g0_t094",
       "tick": 94,
       "satellite_id": 6,
       "station_id": 0,
@@ -2640,6 +2828,7 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g0_t094",
       "tick": 94,
       "satellite_id": 7,
       "station_id": 0,
@@ -2650,76 +2839,84 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s1_g3_t095",
       "tick": 95,
       "satellite_id": 1,
       "station_id": 3,
-      "duration_s": 174.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 23.55,
       "elevation_deg": 16.64,
       "link_quality": 0.291,
-      "max_bytes": 514109515
+      "max_bytes": 1766421712
     },
     {
+      "window_id": "w_s5_g3_t095",
       "tick": 95,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 214.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 32.15,
       "elevation_deg": 19.33,
       "link_quality": 0.3582,
-      "max_bytes": 863610290
+      "max_bytes": 2411302488
     },
     {
+      "window_id": "w_s6_g3_t095",
       "tick": 95,
       "satellite_id": 6,
       "station_id": 3,
-      "duration_s": 197.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 28.28,
       "elevation_deg": 18.15,
       "link_quality": 0.3288,
-      "max_bytes": 697220858
+      "max_bytes": 2120719509
     },
     {
+      "window_id": "w_s7_g3_t095",
       "tick": 95,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 213.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 31.72,
       "elevation_deg": 19.2,
       "link_quality": 0.3549,
-      "max_bytes": 844425832
+      "max_bytes": 2379019026
     },
     {
+      "window_id": "w_s2_g1_t098",
       "tick": 98,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 80.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 7.31,
       "elevation_deg": 10.34,
       "link_quality": 0.1335,
-      "max_bytes": 73211588
+      "max_bytes": 548540764
     },
     {
+      "window_id": "w_s3_g1_t098",
       "tick": 98,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 85.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 8.09,
       "elevation_deg": 10.71,
       "link_quality": 0.1428,
-      "max_bytes": 86679205
+      "max_bytes": 607029729
     },
     {
+      "window_id": "w_s4_g1_t098",
       "tick": 98,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 74.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 6.5,
       "elevation_deg": 9.94,
       "link_quality": 0.1234,
-      "max_bytes": 60218958
+      "max_bytes": 487866450
     },
     {
+      "window_id": "w_s1_g1_t099",
       "tick": 99,
       "satellite_id": 1,
       "station_id": 1,
@@ -2730,46 +2927,51 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s2_g1_t099",
       "tick": 99,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 3.69,
       "elevation_deg": 8.38,
       "link_quality": 0.0846,
-      "max_bytes": 27676932
+      "max_bytes": 276769320
     },
     {
+      "window_id": "w_s3_g1_t099",
       "tick": 99,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 3.16,
       "elevation_deg": 8.05,
       "link_quality": 0.0763,
-      "max_bytes": 23717124
+      "max_bytes": 237171247
     },
     {
+      "window_id": "w_s4_g1_t099",
       "tick": 99,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 4.21,
       "elevation_deg": 8.7,
       "link_quality": 0.0924,
-      "max_bytes": 31598667
+      "max_bytes": 315986678
     },
     {
+      "window_id": "w_s5_g1_t099",
       "tick": 99,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 581.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 143.05,
       "elevation_deg": 43.75,
       "link_quality": 0.9688,
-      "max_bytes": 10394234200
+      "max_bytes": 10728438297
     },
     {
+      "window_id": "w_s6_g1_t099",
       "tick": 99,
       "satellite_id": 6,
       "station_id": 1,
@@ -2780,116 +2982,128 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g1_t099",
       "tick": 99,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 581.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 143.2,
       "elevation_deg": 43.78,
       "link_quality": 0.9695,
-      "max_bytes": 10412460827
+      "max_bytes": 10739721940
     },
     {
+      "window_id": "w_s2_g0_t103",
       "tick": 103,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 209.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 30.91,
       "elevation_deg": 18.96,
       "link_quality": 0.3489,
-      "max_bytes": 808786670
+      "max_bytes": 2318256040
     },
     {
+      "window_id": "w_s3_g0_t103",
       "tick": 103,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 210.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 31.09,
       "elevation_deg": 19.01,
       "link_quality": 0.3502,
-      "max_bytes": 816469970
+      "max_bytes": 2331444807
     },
     {
+      "window_id": "w_s4_g0_t103",
       "tick": 103,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 212.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 31.56,
       "elevation_deg": 19.15,
       "link_quality": 0.3538,
-      "max_bytes": 837401571
+      "max_bytes": 2367125435
     },
     {
+      "window_id": "w_s1_g0_t104",
       "tick": 104,
       "satellite_id": 1,
       "station_id": 0,
-      "duration_s": 502.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 114.78,
       "elevation_deg": 38.46,
       "link_quality": 0.8366,
-      "max_bytes": 7202149460
+      "max_bytes": 8608714137
     },
     {
+      "window_id": "w_s2_g3_t104",
       "tick": 104,
       "satellite_id": 2,
       "station_id": 3,
-      "duration_s": 223.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 34.1,
       "elevation_deg": 19.9,
       "link_quality": 0.3725,
-      "max_bytes": 952661333
+      "max_bytes": 2557549995
     },
     {
+      "window_id": "w_s3_g3_t104",
       "tick": 104,
       "satellite_id": 3,
       "station_id": 3,
-      "duration_s": 233.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 36.52,
       "elevation_deg": 20.59,
       "link_quality": 0.3899,
-      "max_bytes": 1067717644
+      "max_bytes": 2738639455
     },
     {
+      "window_id": "w_s4_g3_t104",
       "tick": 104,
       "satellite_id": 4,
       "station_id": 3,
-      "duration_s": 212.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 31.61,
       "elevation_deg": 19.16,
       "link_quality": 0.3541,
-      "max_bytes": 839527192
+      "max_bytes": 2370728766
     },
     {
+      "window_id": "w_s5_g0_t104",
       "tick": 104,
       "satellite_id": 5,
       "station_id": 0,
-      "duration_s": 450.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 97.71,
       "elevation_deg": 35.06,
       "link_quality": 0.7515,
-      "max_bytes": 5506898357
+      "max_bytes": 7328333841
     },
     {
+      "window_id": "w_s6_g0_t104",
       "tick": 104,
       "satellite_id": 6,
       "station_id": 0,
-      "duration_s": 569.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 138.86,
       "elevation_deg": 42.99,
       "link_quality": 0.9498,
-      "max_bytes": 9891766012
+      "max_bytes": 10414185514
     },
     {
+      "window_id": "w_s7_g0_t104",
       "tick": 104,
       "satellite_id": 7,
       "station_id": 0,
-      "duration_s": 452.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 98.18,
       "elevation_deg": 35.15,
       "link_quality": 0.7539,
-      "max_bytes": 5551368040
+      "max_bytes": 7363783669
     },
     {
+      "window_id": "w_s1_g3_t105",
       "tick": 105,
       "satellite_id": 1,
       "station_id": 3,
@@ -2900,16 +3114,18 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s5_g3_t105",
       "tick": 105,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 524.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 122.64,
       "elevation_deg": 39.97,
       "link_quality": 0.8744,
-      "max_bytes": 8042317753
+      "max_bytes": 9197922498
     },
     {
+      "window_id": "w_s6_g3_t105",
       "tick": 105,
       "satellite_id": 6,
       "station_id": 3,
@@ -2920,46 +3136,51 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g3_t105",
       "tick": 105,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 523.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 122.37,
       "elevation_deg": 39.92,
       "link_quality": 0.8731,
-      "max_bytes": 8013156386
+      "max_bytes": 9177897014
     },
     {
+      "window_id": "w_s2_g1_t108",
       "tick": 108,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 306.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 54.87,
       "elevation_deg": 25.46,
       "link_quality": 0.5115,
-      "max_bytes": 2104974555
+      "max_bytes": 4115372198
     },
     {
+      "window_id": "w_s3_g1_t108",
       "tick": 108,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 313.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 56.58,
       "elevation_deg": 25.88,
       "link_quality": 0.5221,
-      "max_bytes": 2215606027
+      "max_bytes": 4243815862
     },
     {
+      "window_id": "w_s4_g1_t108",
       "tick": 108,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 303.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 54.05,
       "elevation_deg": 25.26,
       "link_quality": 0.5064,
-      "max_bytes": 2052929677
+      "max_bytes": 4054015947
     },
     {
+      "window_id": "w_s1_g1_t109",
       "tick": 109,
       "satellite_id": 1,
       "station_id": 1,
@@ -2970,16 +3191,18 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s5_g1_t109",
       "tick": 109,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 419.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 87.78,
       "elevation_deg": 32.99,
       "link_quality": 0.6996,
-      "max_bytes": 4606276720
+      "max_bytes": 6583715016
     },
     {
+      "window_id": "w_s6_g1_t109",
       "tick": 109,
       "satellite_id": 6,
       "station_id": 1,
@@ -2990,136 +3213,150 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g1_t109",
       "tick": 109,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 421.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 88.2,
       "elevation_deg": 33.07,
       "link_quality": 0.7019,
-      "max_bytes": 4642947129
+      "max_bytes": 6615112766
     },
     {
+      "window_id": "w_s2_g0_t113",
       "tick": 113,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 201.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 29.13,
       "elevation_deg": 18.41,
       "link_quality": 0.3353,
-      "max_bytes": 732518165
+      "max_bytes": 2184499996
     },
     {
+      "window_id": "w_s3_g0_t113",
       "tick": 113,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 196.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 28.21,
       "elevation_deg": 18.13,
       "link_quality": 0.3282,
-      "max_bytes": 694466340
+      "max_bytes": 2115688520
     },
     {
+      "window_id": "w_s4_g0_t113",
       "tick": 113,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 211.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 31.4,
       "elevation_deg": 19.1,
       "link_quality": 0.3526,
-      "max_bytes": 830272748
+      "max_bytes": 2355013923
     },
     {
+      "window_id": "w_s1_g0_t114",
       "tick": 114,
       "satellite_id": 1,
       "station_id": 0,
-      "duration_s": 291.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 50.74,
       "elevation_deg": 24.42,
       "link_quality": 0.4855,
-      "max_bytes": 1847440146
+      "max_bytes": 3805425597
     },
     {
+      "window_id": "w_s2_g3_t114",
       "tick": 114,
       "satellite_id": 2,
       "station_id": 3,
-      "duration_s": 496.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 112.95,
       "elevation_deg": 38.11,
       "link_quality": 0.8277,
-      "max_bytes": 7011690798
+      "max_bytes": 8471389743
     },
     {
+      "window_id": "w_s3_g3_t114",
       "tick": 114,
       "satellite_id": 3,
       "station_id": 3,
-      "duration_s": 487.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 109.72,
       "elevation_deg": 37.47,
       "link_quality": 0.8118,
-      "max_bytes": 6680468760
+      "max_bytes": 8228964172
     },
     {
+      "window_id": "w_s4_g3_t114",
       "tick": 114,
       "satellite_id": 4,
       "station_id": 3,
-      "duration_s": 516.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 119.95,
       "elevation_deg": 39.46,
       "link_quality": 0.8615,
-      "max_bytes": 7750127370
+      "max_bytes": 8995935087
     },
     {
+      "window_id": "w_s5_g0_t114",
       "tick": 114,
       "satellite_id": 5,
       "station_id": 0,
-      "duration_s": 161.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 20.87,
       "elevation_deg": 15.74,
       "link_quality": 0.2685,
-      "max_bytes": 420189791
+      "max_bytes": 1565050325
     },
     {
+      "window_id": "w_s6_g0_t114",
       "tick": 114,
       "satellite_id": 6,
       "station_id": 0,
-      "duration_s": 281.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 48.19,
       "elevation_deg": 23.76,
       "link_quality": 0.4691,
-      "max_bytes": 1695325434
+      "max_bytes": 3614205608
     },
     {
+      "window_id": "w_s7_g0_t114",
       "tick": 114,
       "satellite_id": 7,
       "station_id": 0,
-      "duration_s": 162.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 21.08,
       "elevation_deg": 15.81,
       "link_quality": 0.2703,
-      "max_bytes": 427421341
+      "max_bytes": 1581156037
     },
     {
+      "window_id": "w_s1_g3_t115",
       "tick": 115,
       "satellite_id": 1,
       "station_id": 3,
-      "duration_s": 483.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 108.6,
       "elevation_deg": 37.25,
       "link_quality": 0.8063,
-      "max_bytes": 6567008484
+      "max_bytes": 8144821210
     },
     {
+      "window_id": "w_s5_g3_t115",
       "tick": 115,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 395.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 80.24,
       "elevation_deg": 31.36,
       "link_quality": 0.659,
-      "max_bytes": 3965859803
+      "max_bytes": 6018155755
     },
     {
+      "window_id": "w_s6_g3_t115",
       "tick": 115,
       "satellite_id": 6,
       "station_id": 3,
@@ -3130,524 +3367,576 @@
       "max_bytes": 11250000000
     },
     {
+      "window_id": "w_s7_g3_t115",
       "tick": 115,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 397.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 80.92,
       "elevation_deg": 31.51,
       "link_quality": 0.6627,
-      "max_bytes": 4022101398
+      "max_bytes": 6069219129
     },
     {
+      "window_id": "w_s2_g1_t118",
       "tick": 118,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 388.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 78.09,
       "elevation_deg": 30.88,
       "link_quality": 0.6471,
-      "max_bytes": 3789832933
+      "max_bytes": 5856431234
     },
     {
+      "window_id": "w_s3_g1_t118",
       "tick": 118,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 382.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 76.28,
       "elevation_deg": 30.48,
       "link_quality": 0.6371,
-      "max_bytes": 3644635352
+      "max_bytes": 5720756451
     },
     {
+      "window_id": "w_s4_g1_t118",
       "tick": 118,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 403.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 82.76,
       "elevation_deg": 31.91,
       "link_quality": 0.6727,
-      "max_bytes": 4175526561
+      "max_bytes": 6207085953
     },
     {
+      "window_id": "w_s1_g1_t119",
       "tick": 119,
       "satellite_id": 1,
       "station_id": 1,
-      "duration_s": 461.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 101.03,
       "elevation_deg": 35.73,
       "link_quality": 0.7684,
-      "max_bytes": 5821927209
+      "max_bytes": 7577066026
     },
     {
+      "window_id": "w_s5_g1_t119",
       "tick": 119,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 188.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 26.4,
       "elevation_deg": 17.56,
       "link_quality": 0.3141,
-      "max_bytes": 621862217
+      "max_bytes": 1980056175
     },
     {
+      "window_id": "w_s6_g1_t119",
       "tick": 119,
       "satellite_id": 6,
       "station_id": 1,
-      "duration_s": 415.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 86.54,
       "elevation_deg": 32.72,
       "link_quality": 0.6931,
-      "max_bytes": 4498472085
+      "max_bytes": 6490826893
     },
     {
+      "window_id": "w_s7_g1_t119",
       "tick": 119,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 189.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 26.66,
       "elevation_deg": 17.65,
       "link_quality": 0.3161,
-      "max_bytes": 632224382
+      "max_bytes": 1999787059
     },
     {
+      "window_id": "w_s2_g0_t123",
       "tick": 123,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 107.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 11.34,
       "elevation_deg": 12.15,
       "link_quality": 0.1788,
-      "max_bytes": 152016837
+      "max_bytes": 850346689
     },
     {
+      "window_id": "w_s3_g0_t123",
       "tick": 123,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 103.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 10.75,
       "elevation_deg": 11.9,
       "link_quality": 0.1725,
-      "max_bytes": 139083528
+      "max_bytes": 806169623
     },
     {
+      "window_id": "w_s4_g0_t123",
       "tick": 123,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 115.2,
+      "duration_s": 600.0,
       "max_rate_mbps": 12.62,
       "elevation_deg": 12.68,
       "link_quality": 0.192,
-      "max_bytes": 181767253
+      "max_bytes": 946608491
     },
     {
+      "window_id": "w_s1_g0_t124",
       "tick": 124,
       "satellite_id": 1,
       "station_id": 0,
-      "duration_s": 134.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 15.82,
       "elevation_deg": 13.93,
       "link_quality": 0.2233,
-      "max_bytes": 264980212
+      "max_bytes": 1186831530
     },
     {
+      "window_id": "w_s2_g3_t124",
       "tick": 124,
       "satellite_id": 2,
       "station_id": 3,
-      "duration_s": 129.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 15.04,
       "elevation_deg": 13.63,
       "link_quality": 0.2158,
-      "max_bytes": 243438277
+      "max_bytes": 1127961635
     },
     {
+      "window_id": "w_s3_g3_t124",
       "tick": 124,
       "satellite_id": 3,
       "station_id": 3,
-      "duration_s": 117.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 12.94,
       "elevation_deg": 12.81,
       "link_quality": 0.1952,
-      "max_bytes": 189419518
+      "max_bytes": 970321926
     },
     {
+      "window_id": "w_s4_g3_t124",
       "tick": 124,
       "satellite_id": 4,
       "station_id": 3,
-      "duration_s": 145.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 17.95,
       "elevation_deg": 14.71,
       "link_quality": 0.2428,
-      "max_bytes": 326829776
+      "max_bytes": 1346027643
     },
     {
+      "window_id": "w_s6_g0_t124",
       "tick": 124,
       "satellite_id": 6,
       "station_id": 0,
-      "duration_s": 93.7,
+      "duration_s": 600.0,
       "max_rate_mbps": 9.26,
       "elevation_deg": 11.25,
       "link_quality": 0.1562,
-      "max_bytes": 108498381
+      "max_bytes": 694568311
     },
     {
+      "window_id": "w_s1_g3_t125",
       "tick": 125,
       "satellite_id": 1,
       "station_id": 3,
-      "duration_s": 129.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 15.03,
       "elevation_deg": 13.63,
       "link_quality": 0.2157,
-      "max_bytes": 243070774
+      "max_bytes": 1126939640
     },
     {
+      "window_id": "w_s5_g3_t125",
       "tick": 125,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 217.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 32.81,
       "elevation_deg": 19.52,
       "link_quality": 0.3631,
-      "max_bytes": 893532535
+      "max_bytes": 2461088501
     },
     {
+      "window_id": "w_s6_g3_t125",
       "tick": 125,
       "satellite_id": 6,
       "station_id": 3,
-      "duration_s": 204.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 29.9,
       "elevation_deg": 18.65,
       "link_quality": 0.3413,
-      "max_bytes": 765416295
+      "max_bytes": 2242846911
     },
     {
+      "window_id": "w_s7_g3_t125",
       "tick": 125,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 219.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 33.1,
       "elevation_deg": 19.61,
       "link_quality": 0.3652,
-      "max_bytes": 906501038
+      "max_bytes": 2482458475
     },
     {
+      "window_id": "w_s2_g1_t128",
       "tick": 128,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 219.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 33.08,
       "elevation_deg": 19.6,
       "link_quality": 0.365,
-      "max_bytes": 905469935
+      "max_bytes": 2480763880
     },
     {
+      "window_id": "w_s3_g1_t128",
       "tick": 128,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 212.4,
+      "duration_s": 600.0,
       "max_rate_mbps": 31.6,
       "elevation_deg": 19.16,
       "link_quality": 0.354,
-      "max_bytes": 838985713
+      "max_bytes": 2369811204
     },
     {
+      "window_id": "w_s4_g1_t128",
       "tick": 128,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 230.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 35.63,
       "elevation_deg": 20.34,
       "link_quality": 0.3836,
-      "max_bytes": 1025166497
+      "max_bytes": 2672622694
     },
     {
+      "window_id": "w_s1_g1_t129",
       "tick": 129,
       "satellite_id": 1,
       "station_id": 1,
-      "duration_s": 222.8,
+      "duration_s": 600.0,
       "max_rate_mbps": 33.93,
       "elevation_deg": 19.85,
       "link_quality": 0.3713,
-      "max_bytes": 944781266
+      "max_bytes": 2544835843
     },
     {
+      "window_id": "w_s5_g1_t129",
       "tick": 129,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.16,
       "elevation_deg": 5.41,
       "link_quality": 0.0103,
-      "max_bytes": 1177517
+      "max_bytes": 11775176
     },
     {
+      "window_id": "w_s6_g1_t129",
       "tick": 129,
       "satellite_id": 6,
       "station_id": 1,
-      "duration_s": 164.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 21.43,
       "elevation_deg": 15.93,
       "link_quality": 0.2733,
-      "max_bytes": 439108944
+      "max_bytes": 1606957457
     },
     {
+      "window_id": "w_s7_g1_t129",
       "tick": 129,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.2,
       "elevation_deg": 5.48,
       "link_quality": 0.012,
-      "max_bytes": 1483641
+      "max_bytes": 14836414
     },
     {
+      "window_id": "w_s5_g1_t130",
       "tick": 130,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 2.81,
       "elevation_deg": 7.82,
       "link_quality": 0.0705,
-      "max_bytes": 21046231
+      "max_bytes": 210462310
     },
     {
+      "window_id": "w_s7_g1_t130",
       "tick": 130,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 2.71,
       "elevation_deg": 7.75,
       "link_quality": 0.0688,
-      "max_bytes": 20322093
+      "max_bytes": 203220934
     },
     {
+      "window_id": "w_s2_g0_t133",
       "tick": 133,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 2.34,
       "elevation_deg": 7.49,
       "link_quality": 0.0624,
-      "max_bytes": 17522071
+      "max_bytes": 175220712
     },
     {
+      "window_id": "w_s3_g0_t133",
       "tick": 133,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 2.16,
       "elevation_deg": 7.36,
       "link_quality": 0.0591,
-      "max_bytes": 16169493
+      "max_bytes": 161694933
     },
     {
+      "window_id": "w_s4_g0_t133",
       "tick": 133,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 2.79,
       "elevation_deg": 7.81,
       "link_quality": 0.0702,
-      "max_bytes": 20924255
+      "max_bytes": 209242555
     },
     {
+      "window_id": "w_s1_g0_t134",
       "tick": 134,
       "satellite_id": 1,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.79,
       "elevation_deg": 6.21,
       "link_quality": 0.0303,
-      "max_bytes": 5941840
+      "max_bytes": 59418403
     },
     {
+      "window_id": "w_s5_g0_t135",
       "tick": 135,
       "satellite_id": 5,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 3.4,
       "elevation_deg": 8.21,
       "link_quality": 0.0801,
-      "max_bytes": 25526841
+      "max_bytes": 255268418
     },
     {
+      "window_id": "w_s5_g3_t135",
       "tick": 135,
       "satellite_id": 5,
       "station_id": 3,
-      "duration_s": 149.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 18.58,
       "elevation_deg": 14.94,
       "link_quality": 0.2485,
-      "max_bytes": 346327033
+      "max_bytes": 1393647194
     },
     {
+      "window_id": "w_s6_g3_t135",
       "tick": 135,
       "satellite_id": 6,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 3.69,
       "elevation_deg": 8.38,
       "link_quality": 0.0845,
-      "max_bytes": 27641936
+      "max_bytes": 276419360
     },
     {
+      "window_id": "w_s7_g0_t135",
       "tick": 135,
       "satellite_id": 7,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 3.33,
       "elevation_deg": 8.16,
       "link_quality": 0.079,
-      "max_bytes": 24992390
+      "max_bytes": 249923900
     },
     {
+      "window_id": "w_s7_g3_t135",
       "tick": 135,
       "satellite_id": 7,
       "station_id": 3,
-      "duration_s": 149.6,
+      "duration_s": 600.0,
       "max_rate_mbps": 18.67,
       "elevation_deg": 14.97,
       "link_quality": 0.2493,
-      "max_bytes": 349009433
+      "max_bytes": 1400113711
     },
     {
+      "window_id": "w_s2_g1_t138",
       "tick": 138,
       "satellite_id": 2,
       "station_id": 1,
-      "duration_s": 95.9,
+      "duration_s": 600.0,
       "max_rate_mbps": 9.58,
       "elevation_deg": 11.39,
       "link_quality": 0.1598,
-      "max_bytes": 114751997
+      "max_bytes": 718318681
     },
     {
+      "window_id": "w_s3_g1_t138",
       "tick": 138,
       "satellite_id": 3,
       "station_id": 1,
-      "duration_s": 92.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 9.05,
       "elevation_deg": 11.15,
       "link_quality": 0.1538,
-      "max_bytes": 104335780
+      "max_bytes": 678454879
     },
     {
+      "window_id": "w_s4_g1_t138",
       "tick": 138,
       "satellite_id": 4,
       "station_id": 1,
-      "duration_s": 101.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 10.41,
       "elevation_deg": 11.76,
       "link_quality": 0.1689,
-      "max_bytes": 131899773
+      "max_bytes": 780921606
     },
     {
+      "window_id": "w_s0_g3_t139",
       "tick": 139,
       "satellite_id": 0,
       "station_id": 3,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 2.59,
       "elevation_deg": 7.68,
       "link_quality": 0.0669,
-      "max_bytes": 19458554
+      "max_bytes": 194585540
     },
     {
+      "window_id": "w_s1_g1_t139",
       "tick": 139,
       "satellite_id": 1,
       "station_id": 1,
-      "duration_s": 68.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 5.77,
       "elevation_deg": 9.56,
       "link_quality": 0.1139,
-      "max_bytes": 49253889
+      "max_bytes": 432439473
     },
     {
+      "window_id": "w_s6_g1_t139",
       "tick": 139,
       "satellite_id": 6,
       "station_id": 1,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.07,
       "elevation_deg": 5.23,
       "link_quality": 0.0058,
-      "max_bytes": 495713
+      "max_bytes": 4957138
     },
     {
+      "window_id": "w_s5_g1_t140",
       "tick": 140,
       "satellite_id": 5,
       "station_id": 1,
-      "duration_s": 76.3,
+      "duration_s": 600.0,
       "max_rate_mbps": 6.8,
       "elevation_deg": 10.09,
       "link_quality": 0.1271,
-      "max_bytes": 64839289
+      "max_bytes": 509992699
     },
     {
+      "window_id": "w_s7_g1_t140",
       "tick": 140,
       "satellite_id": 7,
       "station_id": 1,
-      "duration_s": 75.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 6.7,
       "elevation_deg": 10.04,
       "link_quality": 0.1259,
-      "max_bytes": 63281199
+      "max_bytes": 502603872
     },
     {
+      "window_id": "w_s2_g0_t143",
       "tick": 143,
       "satellite_id": 2,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.22,
       "elevation_deg": 5.51,
       "link_quality": 0.0128,
-      "max_bytes": 1626660
+      "max_bytes": 16266602
     },
     {
+      "window_id": "w_s2_g3_t143",
       "tick": 143,
       "satellite_id": 2,
       "station_id": 3,
-      "duration_s": 112.5,
+      "duration_s": 600.0,
       "max_rate_mbps": 12.18,
       "elevation_deg": 12.5,
       "link_quality": 0.1875,
-      "max_bytes": 171366983
+      "max_bytes": 913728770
     },
     {
+      "window_id": "w_s3_g0_t143",
       "tick": 143,
       "satellite_id": 3,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.21,
       "elevation_deg": 5.5,
       "link_quality": 0.0125,
-      "max_bytes": 1572347
+      "max_bytes": 15723476
     },
     {
+      "window_id": "w_s3_g3_t143",
       "tick": 143,
       "satellite_id": 3,
       "station_id": 3,
-      "duration_s": 115.1,
+      "duration_s": 600.0,
       "max_rate_mbps": 12.61,
       "elevation_deg": 12.68,
       "link_quality": 0.1919,
-      "max_bytes": 181483395
+      "max_bytes": 945721247
     },
     {
+      "window_id": "w_s4_g0_t143",
       "tick": 143,
       "satellite_id": 4,
       "station_id": 0,
-      "duration_s": 60.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 0.32,
       "elevation_deg": 5.66,
       "link_quality": 0.0165,
-      "max_bytes": 2388237
+      "max_bytes": 23882379
     },
     {
+      "window_id": "w_s4_g3_t143",
       "tick": 143,
       "satellite_id": 4,
       "station_id": 3,
-      "duration_s": 108.0,
+      "duration_s": 600.0,
       "max_rate_mbps": 11.45,
       "elevation_deg": 12.2,
       "link_quality": 0.18,
-      "max_bytes": 154600504
+      "max_bytes": 858988903
     }
   ],
   "emergency_injections": [

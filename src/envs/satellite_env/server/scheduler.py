@@ -87,6 +87,7 @@ class Scheduler:
         self,
         initial_queues: Dict[int, List[DataChunkModel]],
         downlink_rates_bps: Dict[int, int],
+        windows: Optional[List[dict]] = None,
     ) -> None:
         # Deep-copy queues so reset() can restore from originals
         self._original_queues = {
@@ -100,6 +101,8 @@ class Scheduler:
         self._download_log: List[DownlinkResult] = []
         self._queues:       Dict[int, List[DataChunkModel]] = {}
         self._buffer_bytes: Dict[int, int] = {}
+        
+        self._windows_map = {w.get("window_id", f"w_s{w['satellite_id']}_g{w['station_id']}_t{w['tick']:03d}"): w for w in (windows or [])}
 
         self._init_queues()
 
@@ -259,11 +262,15 @@ class Scheduler:
 
         for entry in firing:
             avail = availability.get(entry.station_id, 1.0)
-            rate_bps = self._downlink_rates.get(entry.satellite_id, 150_000_000)
-            # max_bytes for this window: rate × 600s (one tick) × availability
-            # We use a fixed 600s window width here; the pass_windows.json
-            # duration_s is used for more precise scheduling in future work.
-            window_bytes = int(rate_bps / 8 * 600 * avail)
+            
+            # Pass the window object into execute_tick so it can use max_bytes:
+            # max_bytes already encodes rate × duration × link_quality
+            window = self._windows_map.get(entry.window_id)
+            if window and "max_bytes" in window:
+                window_bytes = int(window["max_bytes"] * avail)
+            else:
+                rate_bps = self._downlink_rates.get(entry.satellite_id, 150_000_000)
+                window_bytes = int(rate_bps / 8 * 600 * avail)
 
             bytes_downloaded, chunks_log = self._dequeue(
                 entry.satellite_id, window_bytes

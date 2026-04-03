@@ -42,7 +42,7 @@ WORKDIR /app
 # ── Install Python deps ───────────────────────────────────────
 # Copy requirements first — Docker layer cache means pip install
 # only reruns when requirements.txt changes, not on every code edit.
-COPY --chown=user src/envs/satellite_env/server/requirements.txt requirements.txt
+COPY --chown=user requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt
 
@@ -64,6 +64,7 @@ ENV HOME=/home/user \
 ENV SATELLITE_TASK=task1 \
     SATELLITE_SEED=42 \
     WORKERS=2 \
+    MAX_CONCURRENT_ENVS=64 \
     PORT=7860 \
     HOST=0.0.0.0
 
@@ -78,30 +79,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
     CMD curl -f http://localhost:${PORT}/health || exit 1
 
 # ── Start server ──────────────────────────────────────────────
-# Shell form (not exec form) so ${WORKERS} and ${PORT} env vars expand.
-# uvicorn module path: satellite_env.server.app:app
-CMD uvicorn satellite_env.server.app:app \
-        --host ${HOST} \
-        --port ${PORT} \
-        --workers ${WORKERS}
-```
-```
-# src/envs/satellite_env/server/requirements.txt
-#
-# Pinned for reproducibility — these exact versions are tested together.
-# Update pins only when a security patch or OpenEnv upgrade requires it.
-#
-# Core server
-openenv>=0.1.0
-fastapi>=0.111.0,<0.120.0
-uvicorn[standard]>=0.29.0,<0.35.0
-websockets>=12.0,<14.0
-pydantic>=2.7.0,<3.0.0
-
-# Environment logic
-numpy>=1.26.0,<2.1.0
-skyfield>=1.48,<2.0
-
-# Utilities
-python-multipart>=0.0.9    # fastapi file uploads (openenv web UI needs this)
-httpx>=0.27.0              # used by openenv s async client internally
+CMD ["uvicorn", "satellite_env.server.app:app", "--host", "0.0.0.0", "--port", "7860"]
