@@ -1,18 +1,4 @@
-# .dockerignore  (project root)
-#
-# Keeps the Docker build context lean.
-# Without this, Docker sends your entire venv and cache to the daemon.
-
-# Python
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-.Python
-*.egg-info/
-dist/
-build/
-.eggs/
+# Docker ignore list - Satellite Scheduling
 
 # Virtual environments
 .venv/
@@ -20,31 +6,26 @@ venv/
 env/
 ENV/
 
-# Development tools
+# Python cache
+_pycache_/
+*.pyc
+*.pyo
+*.pyd
+
+# Git
 .git/
 .gitignore
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
+
+# IDE config
 .idea/
 .vscode/
-*.iml
 
-# Test and scratch files
-scratch_*.py
-tests/
-htmlcov/
-.coverage
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Logs
-*.log
-*.output/
+# Local data & logs
 logs/
+*.log
+data/temp/
 
-# Keep data/ — the container needs pass_windows.json and scenario files
-# Keep src/ — the environment source code
-# Keep scripts/ — generate_windows.py (not needed at runtime but small)
+# Build artifacts
+dist/
+build/
+*.egg-info/

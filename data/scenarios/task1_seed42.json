@@ -15,13 +15,13 @@
       "id": 0,
       "name": "ISS (ZARYA)",
       "buffer_bytes": 21878699998,
-      "downlink_rate_bps": 150000000
+      "downlink_rate_bps": 1000000000
     },
     {
       "id": 1,
       "name": "SENTINEL-2A",
       "buffer_bytes": 21134899998,
-      "downlink_rate_bps": 150000000
+      "downlink_rate_bps": 1000000000
     }
   ],
   "initial_queues": {

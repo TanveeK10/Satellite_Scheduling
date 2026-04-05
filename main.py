@@ -32,7 +32,7 @@ SYSTEM_PROMPT = textwrap.dedent("""
     You are an autonomous satellite mission planner.
     You control a downlink scheduling environment.
 
-    Your goal: maximise priority-weighted bytes downloaded.
+    Your goal: maximise priority-weighted bytes downloaded from ALL satellites.
     Priority weights: routine=1, important=2, emergency=3.
     Emergency chunks (priority 3) have deadlines — download them FIRST.
 
@@ -43,9 +43,12 @@ SYSTEM_PROMPT = textwrap.dedent("""
         {"action_type": "noop"}
 
     PLANNING RULES:
-    1. STATION CONSTRAINT: One station can only talk to ONE satellite at a time. 
+    1. STATION CONSTRAINT: One station can only talk to ONE satellite at a time.
     2. REDUNDANCY: Do NOT re-schedule a satellite that is already in your CURRENT SCHEDULE.
-    3. NOOP: If you have no windows or all busy satellites are already scheduled, use {"action_type": "noop"}.
+    3. PRIORITY: Always check SATELLITES REMAINING and PRIORITY QUEUES. Follow deadlines strictly.
+    4. NOOP (Wait Strategy): If SATELLITES REMAINING is not empty but TOP WINDOWS is empty, use {"action_type": "noop"} to fast-forward time until a satellite flies over a ground station.
+    5. COVERAGE: You MUST schedule every satellite that has data (buf > 0). If windows are available in TOP WINDOWS, you are forbidden from using noop.
+    6. TERMINATION: Only use noop repeatedly once SATELLITES REMAINING is empty.
 
     Respond with ONLY a valid JSON object. No explanation, no markdown fences.
 """).strip()
@@ -80,15 +83,31 @@ def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> No
 def _obs_to_prompt(obs: SatelliteObservation, step: int) -> str:
     # Compact serialisation for the agent
     avail = obs.station_availability
-    # Sort windows by link_quality × station_availability
+    # Filter out satellites with empty buffers — prevents -0.01 penalty loops
+    buf_bytes = obs.satellite_buffer_bytes
+    active_sats = {sid for sid, buf in buf_bytes.items() if buf > 0}
+    max_buf = max(buf_bytes.values(), default=1)
+
+    # Per-satellite diversity: pick best window for EACH active satellite,
+    # then rank those representatives so the agent covers all satellites.
+    best_per_sat: dict = {}
+    for w in obs.pass_windows:
+        sid_str = str(w.sat_id)
+        if sid_str not in active_sats:
+            continue
+        score = w.link_quality * float(avail.get(str(w.station_id), 1.0))
+        if sid_str not in best_per_sat or score > best_per_sat[sid_str][0]:
+            best_per_sat[sid_str] = (score, w)
+
     ranked = sorted(
-        obs.pass_windows, 
-        key=lambda w: w.link_quality * float(avail.get(str(w.station_id), 1.0)), 
+        best_per_sat.values(),
+        key=lambda t: t[0] * (buf_bytes.get(t[1].window_id.split("_")[1].replace("s",""), 0) or max_buf) / max_buf,
         reverse=True
-    )[:8]
-    
+    )
+    ranked = [t[1] for t in ranked][:8]
+
     windows_text = "\n".join(
-        f"  id={w.window_id} sat={w.sat_id} stn={w.station_id} q={w.link_quality:.2f} elev={w.elevation_deg:.1f}deg"
+        f"  id={w.window_id} sat={w.sat_id} stn={w.station_id} q={w.link_quality:.2f} elev={w.elevation_deg:.1f}deg buf={buf_bytes.get(str(w.sat_id),0)//1_000_000}MB"
         for w in ranked
     ) or "  (none)"
     
@@ -108,11 +127,18 @@ def _obs_to_prompt(obs: SatelliteObservation, step: int) -> str:
         for e in obs.current_schedule[:5]
     ) or "  (empty)"
     
+    # SATELLITES REMAINING summary — makes agent coverage obligation explicit
+    remaining_sats = [
+        f"sat{sid}={buf//1_000_000}MB" 
+        for sid, buf in sorted(buf_bytes.items()) if buf > 0
+    ]
+    remaining_summary = ", ".join(remaining_sats) if remaining_sats else "ALL EMPTY — use noop"
+
     return textwrap.dedent(f"""
         Step {step} | t={obs.current_time_min}min | reward_so_far={obs.reward:.4f}
-        TOP WINDOWS:
+        SATELLITES REMAINING (must schedule all): {remaining_summary}
+        TOP WINDOWS (one per satellite with data):
         {windows_text}
-        BUFFERS: {obs.satellite_buffer_bytes}
         PRIORITY QUEUES (Heads):
         {queue_summary}
         CURRENT SCHEDULE:

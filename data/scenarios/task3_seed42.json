@@ -23,49 +23,49 @@
       "id": 0,
       "name": "ISS (ZARYA)",
       "buffer_bytes": 22092800000,
-      "downlink_rate_bps": 150000000
+      "downlink_rate_bps": 1000000000
     },
     {
       "id": 1,
       "name": "SENTINEL-2A",
       "buffer_bytes": 20604500000,
-      "downlink_rate_bps": 150000000
+      "downlink_rate_bps": 1000000000
     },
     {
       "id": 2,
       "name": "AQUA",
       "buffer_bytes": 22340899997,
-      "downlink_rate_bps": 150000000
+      "downlink_rate_bps": 1000000000
     },
     {
       "id": 3,
       "name": "TERRA",
       "buffer_bytes": 20588599999,
-      "downlink_rate_bps": 150000000
+      "downlink_rate_bps": 1000000000
     },
     {
       "id": 4,
       "name": "LANDSAT-8",
       "buffer_bytes": 20581599998,
-      "downlink_rate_bps": 150000000
+      "downlink_rate_bps": 1000000000
     },
     {
       "id": 5,
       "name": "SUOMI NPP",
       "buffer_bytes": 22381500000,
-      "downlink_rate_bps": 150000000
+      "downlink_rate_bps": 1000000000
     },
     {
       "id": 6,
       "name": "SENTINEL-3A",
       "buffer_bytes": 20905300000,
-      "downlink_rate_bps": 150000000
+      "downlink_rate_bps": 1000000000
     },
     {
       "id": 7,
       "name": "NOAA-20",
       "buffer_bytes": 21069600000,
-      "downlink_rate_bps": 150000000
+      "downlink_rate_bps": 1000000000
     }
   ],
   "initial_queues": {
