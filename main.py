@@ -88,7 +88,7 @@ def _obs_to_prompt(obs: SatelliteObservation, step: int) -> str:
     )[:8]
     
     windows_text = "\n".join(
-        f"  id={w.window_id} sat={w.sat_id} stn={w.station_id} q={w.link_quality:.2f}"
+        f"  id={w.window_id} sat={w.sat_id} stn={w.station_id} q={w.link_quality:.2f} elev={w.elevation_deg:.1f}deg"
         for w in ranked
     ) or "  (none)"
     

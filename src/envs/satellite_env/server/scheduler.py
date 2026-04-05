@@ -236,6 +236,7 @@ class Scheduler:
         self,
         tick: int,
         availability: Dict[int, float],
+        window_elevations: Dict[str, float] = None,
     ) -> List[DownlinkResult]:
         """
         Execute all windows scheduled for this tick.
@@ -260,10 +261,14 @@ class Scheduler:
         for entry in firing:
             avail = availability.get(entry.station_id, 1.0)
             rate_bps = self._downlink_rates.get(entry.sat_id, 150_000_000)
-            # max_bytes for this window: rate × 600s (one tick) × availability
-            # We use a fixed 600s window width here; the pass_windows.json
-            # duration_s is used for more precise scheduling in future work.
-            window_bytes = int(rate_bps / 8 * 600 * avail)
+            
+            # Elevation curve throttling
+            import math
+            elev_deg = window_elevations.get(entry.window_id, 90.0) if window_elevations else 90.0
+            elev_scalar = math.sin(math.radians(max(0, elev_deg)))
+            
+            # max_bytes for this window: rate × 600s (one tick) × availability × elevation efficiency
+            window_bytes = int((rate_bps / 8) * 600 * avail * elev_scalar)
 
             bytes_downloaded, chunks_log = self._dequeue(
                 entry.sat_id, window_bytes

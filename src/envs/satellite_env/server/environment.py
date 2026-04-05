@@ -215,7 +215,11 @@ class SatelliteEnvironment(Environment):
 
         # ── 3. Execute scheduled windows for this tick ────────────────
         availability = self._weather.get(self._tick)
-        results = self._scheduler.execute_tick(self._tick, availability)
+        window_elevations = {
+            f"w_s{w['sat_id']}_g{w['station_id']}_{w['tick']:03d}": w["elevation_deg"]
+            for w in self._all_windows if w["tick"] == self._tick
+        }
+        results = self._scheduler.execute_tick(self._tick, availability, window_elevations)
 
         # ── 4. Compute reward ─────────────────────────────────────────
         tick_weighted_bytes = 0.0
