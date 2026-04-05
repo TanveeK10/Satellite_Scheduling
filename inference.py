@@ -10,11 +10,11 @@ from typing import List, Optional
 from openai import OpenAI
 
 # ── Imports (after path setup) ────────────────────────────────
-# Add src to sys.path to resolve relative imports
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
+# Add the project root to sys.path to resolve 'src' as a package
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-from envs.satellite_env.client import SatelliteEnv
-from envs.satellite_env.models import SatelliteAction, SatelliteObservation
+from src.envs.satellite_env.client import SatelliteEnv
+from src.envs.satellite_env.models import SatelliteAction, SatelliteObservation
 
 # ── Mandatory Environment Configuration ──────────────────────
 API_BASE_URL = os.getenv("API_BASE_URL") or "https://router.huggingface.co/v1"
