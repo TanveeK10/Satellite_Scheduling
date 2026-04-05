@@ -9,8 +9,8 @@
 
 name: satellite-downlink-scheduler
 version: "1.0.0"
-author: "TanveeK10"
-repository: "https://github.com/TanveeK10/Satellite_Scheduling"
+author: "Dhruvk14"
+repository: "https://huggingface.co/spaces/Dhruvk14/Satellite_Scheduler"
 license: "apache-2.0"
 
 description: >
