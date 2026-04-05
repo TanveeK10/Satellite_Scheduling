@@ -38,6 +38,17 @@ app = create_fastapi_app(
     SatelliteObservation,
 )
 
+@app.get("/")
+def welcome():
+    """Friendly welcome message for HF Spaces."""
+    return {
+        "status": "ready",
+        "project": "Satellite Downlink Scheduler",
+        "benchmark": "Meta-OpenEnv",
+        "author": "Dhruvk14",
+        "endpoints": ["/reset", "/step", "/state"]
+    }
+
 def create_app():
     """Entry point for [project.scripts] — returns the FastAPI app."""
     return app
