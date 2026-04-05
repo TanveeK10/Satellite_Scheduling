@@ -59,7 +59,7 @@
 # # TICKS          = 144
 # # TICK_MINUTES   = 10
 # # TICK_SECONDS   = TICK_MINUTES * 60   # 600 s — always a full tick
-# # MIN_ELEVATION  = 5.0
+# # MIN_ELEVATION  = 30.0
 # # MAX_RATE_MBPS  = 150.0
 # # SEED           = 42
 # #
@@ -448,7 +448,7 @@ SEED = 42
 NUM_SATS = 8
 TICKS = 144  # 10-min ticks = 24 h
 TICK_MIN = 10
-MIN_ELEV = 5.0  # degrees — below this, no link
+MIN_ELEV = 30.0  # degrees — below this, no link
 MAX_RATE_MBPS = 150.0
 
 # ---------------------------------------------------------------------------
@@ -615,8 +615,8 @@ def make_scenario(task: str, windows: list[dict], rng: random.Random) -> dict:
         active_stations = [0, 1]
         weather_seed = None  # caller sets availability=1.0 always
         priority_weights = [0.6, 0.4, 0.0]  # only p1 and p2
-        n_chunks = 8
-        size_range = (50.0, 200.0)
+        n_chunks = 85
+        size_range = (100.0, 400.0)
         emergency_injections = []
 
     elif task == "task2":
@@ -625,8 +625,8 @@ def make_scenario(task: str, windows: list[dict], rng: random.Random) -> dict:
         active_stations = list(range(4))
         weather_seed = SEED
         priority_weights = [0.5, 0.35, 0.15]
-        n_chunks = 12
-        size_range = (30.0, 150.0)
+        n_chunks = 85
+        size_range = (100.0, 400.0)
         emergency_injections = []
 
     else:  # task3
@@ -635,44 +635,23 @@ def make_scenario(task: str, windows: list[dict], rng: random.Random) -> dict:
         active_stations = list(range(4))
         weather_seed = SEED
         priority_weights = [0.5, 0.3, 0.2]
-        n_chunks = 12
-        size_range = (30.0, 150.0)
-        # 3 emergency chunks injected at t=240 and t=480 min
-        # into satellites 2, 4, 6 — spread across the constellation
+        n_chunks = 85
+        size_range = (100.0, 400.0)
+        # 8 emergency chunks injected spread across all 8 satellites
+        # into satellites 0-7 at different times
         emergency_injections = [
             {
-                "inject_at_min": 240,
-                "sat_id": 2,
+                "inject_at_min": t*120 + 60,
+                "sat_id": t,
                 "chunk": {
-                    "chunk_id": "emg_s2_000",
+                    "chunk_id": f"emg_s{t}_{t:03d}",
                     "priority": 3,
-                    "size_bytes": int(180 * 1_000_000),  # 180 MB
-                    "injected_at_min": 240,
-                    "deadline_min": 420,  # 3-hour window
+                    "size_bytes": int(1500 * 1_000_000), # 1.5 GB
+                    "injected_at_min": t*120 + 60,
+                    "deadline_min": t*120 + 120, # 60-min window
                 }
-            },
-            {
-                "inject_at_min": 240,
-                "sat_id": 4,
-                "chunk": {
-                    "chunk_id": "emg_s4_000",
-                    "priority": 3,
-                    "size_bytes": int(150 * 1_000_000),
-                    "injected_at_min": 240,
-                    "deadline_min": 420,
-                }
-            },
-            {
-                "inject_at_min": 480,
-                "sat_id": 6,
-                "chunk": {
-                    "chunk_id": "emg_s6_000",
-                    "priority": 3,
-                    "size_bytes": int(200 * 1_000_000),
-                    "injected_at_min": 480,
-                    "deadline_min": 660,
-                }
-            },
+            }
+            for t in range(8)
         ]
 
     # Filter pass windows to only active sats + stations
@@ -695,11 +674,13 @@ def make_scenario(task: str, windows: list[dict], rng: random.Random) -> dict:
     sat_meta = []
     for sid in active_sats:
         total_bytes = sum(c["size_bytes"] for c in queues[sid])
+        # Fixed speed at 150 Mbps for "Low-Bandwidth" stress test
+        rate_mbps = 150.0
         sat_meta.append({
             "id": sid,
             "name": PINNED_TLES[sid][0],
             "buffer_bytes": total_bytes,  # starts full
-            "downlink_rate_bps": int(MAX_RATE_MBPS * 1e6),
+            "downlink_rate_bps": int(rate_mbps * 1e6),
         })
 
     return {

@@ -43,10 +43,11 @@ import time
 from openenv.core.client_types import StepResult
 from openai import OpenAI
 
-from src.envs.satellite_env.client import SatelliteEnv
-from src.envs.satellite_env.models import SatelliteAction, SatelliteObservation
+from src.envs.satellite_env.server.client import SatelliteEnv
+from src.envs.satellite_env.server.models import SatelliteAction, SatelliteObservation
 from src.envs.satellite_env.server.graders import grade_breakdown
 from src.envs.satellite_env.server.environment import SatelliteState
+from tqdm import tqdm
 
 # ── Imports (after path setup) ────────────────────────────────
 sys.path.insert(0, "src")
@@ -59,7 +60,7 @@ HF_TOKEN: str = os.environ.get("HF_TOKEN", "")
 
 # ── Optional env vars ─────────────────────────────────────────
 ENV_URL: str = os.environ.get("ENV_URL", "http://localhost:8000")
-MAX_STEPS: int = int(os.environ.get("MAX_STEPS", "144"))
+MAX_STEPS: int = int(os.environ.get("MAX_STEPS", "400"))
 TEMPERATURE: float = float(os.environ.get("TEMPERATURE", "0.2"))
 MAX_TOKENS: int = int(os.environ.get("MAX_TOKENS", "512"))
 DEBUG: bool = os.environ.get("DEBUG", "0") == "1"
@@ -110,7 +111,8 @@ SYSTEM_PROMPT = textwrap.dedent("""
     2. Prefer windows with high link_quality and high station_availability.
     3. Prefer satellites with high-priority data in their queues.
     4. Use preempt() to free a station slot when emergency data arrives.
-    5. Use noop only when no useful windows are available this tick.
+    5. One satellite and one station can only handle ONE assignment per 10-minute tick.
+    6. Use noop to advance time once you have filled the current tick's slots.
 
     Respond with ONLY a valid JSON object. No explanation, no markdown fences.
     Example: {"action_type": "schedule", "sat_id": 2, "station_id": 0, "window_id": "w_s2_g0_042"}
@@ -266,6 +268,16 @@ def _parse_action(response_text: str) -> SatelliteAction:
 # Single episode runner
 # ─────────────────────────────────────────────────────────────
 
+def _format_action_tag(action: SatelliteAction) -> str:
+    """Format action as type(params) for the judge tag."""
+    params = []
+    if action.sat_id is not None: params.append(f"sat_id={action.sat_id}")
+    if action.station_id is not None: params.append(f"station_id={action.station_id}")
+    if action.window_id is not None: params.append(f"window_id={action.window_id}")
+    if action.schedule_id is not None: params.append(f"schedule_id={action.schedule_id}")
+    return f"{action.action_type}({', '.join(params)})"
+
+
 def run_episode(
         llm: OpenAI,
         env: SatelliteEnv,
@@ -283,9 +295,23 @@ def run_episode(
     step = 0
     t_start = time.time()
 
-    print(f"\n{'─' * 60}")
-    print(f"  Task: {task.upper()}  |  t=0  |  windows={len(obs.pass_windows)}")
-    print(f"{'─' * 60}")
+    print(f"[START] task={task} env=satellite_env model={MODEL_NAME}")
+    
+    cumulative_downloaded = 0
+    total_expected = int(sum(v for v in obs.satellite_buffer_bytes.values()))
+    
+    rewards_list = []
+    
+    # tqdm is disabled by default to ensure a clean tag stream
+    pbar = tqdm(
+        total=total_expected,
+        desc=f"  {task.upper()}",
+        unit="B",
+        unit_scale=True,
+        disable=not DEBUG,
+        bar_format=" {desc}: {percentage:3.0f}%|{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}{postfix}]"
+    )
+    
 
     while not obs.done and step < MAX_STEPS:
         step += 1
@@ -310,7 +336,7 @@ def run_episode(
             print(f"  [warn] LLM call failed at step {step}: {exc}")
             raw_text = ""
             
-        if raw_text:
+        if raw_text and DEBUG:
             print(f"  [debug] LLM raw response (step {step}):\n{raw_text[:500]}...")
 
         action = _parse_action(raw_text)
@@ -319,7 +345,7 @@ def run_episode(
         result = env.step(action)
         obs = result.observation
 
-        # ── Log ───────────────────────────────────────────────
+        # ── Log / Progress ──────────────────────────────────────────
         bytes_dl = obs.info.get("bytes_downloaded", 0)
         r_tick = obs.info.get("reward_last_tick", 0.0)
         conflict = obs.info.get("conflict", False)
@@ -333,18 +359,46 @@ def run_episode(
                 + ("  [CONFLICT]" if conflict else "")
                 + ("  [EMERGENCY]" if emg else "")
         )
-        history.append(history_line)
+        rewards_list.append(round(r_tick, 4))
+        
+        # [STEP] tag for the judge
+        print(f"[STEP] step={step} action={_format_action_tag(action)} reward={r_tick:.4f} done={str(obs.done).lower()} error=null")
+
+        cumulative_downloaded += bytes_dl
+        
+        # Check for new data (emergency injections) to update total
+        current_total_in_env = sum(obs.satellite_buffer_bytes.values()) + cumulative_downloaded
+        if current_total_in_env > total_expected:
+            diff = current_total_in_env - total_expected
+            pbar.total += diff
+            total_expected = current_total_in_env
+
+        # Calculate "Lost" data (chunks past deadline)
+        lost_bytes = 0
+        current_min = obs.current_time_min
+        for sid, chunks in obs.data_priority_queues.items():
+            for chunk in chunks:
+                if chunk.deadline_min is not None and current_min > chunk.deadline_min:
+                    lost_bytes += chunk.size_bytes
+
+        pbar.update(bytes_dl)
+        pbar.set_postfix({
+            "Rem": f"{sum(obs.satellite_buffer_bytes.values())/1e6:.1f}MB",
+            "Lost": f"{lost_bytes/1e6:.1f}MB"
+        })
 
         if DEBUG:
-            print(f"  step {step:3d}: {history_line}")
-        elif step % 20 == 0 or emg or conflict:
-            print(f"  step {step:3d}: t={obs.current_time_min}min  "
-                  f"reward_total={obs.reward:.4f}"
-                  + ("  *** EMERGENCY ***" if emg else ""))
-
-    # ── Final state ───────────────────────────────────────────
+            pbar.write(f"  step {step:3d}: {history_line}")
+        
+    pbar.close()
+    # ── [END] tag logic ───────────────────────────────────────
     final_state = env.state()
     duration = time.time() - t_start
+    score = final_state.final_score
+    success = "true" if score > 0 else "false"
+    rewards_str = ",".join(map(str, rewards_list))
+
+    print(f"[END] success={success} steps={step} score={score:.3f} rewards={rewards_str}")
 
     return {
         "task": task,
@@ -361,14 +415,15 @@ def run_episode(
 # ─────────────────────────────────────────────────────────────
 
 def main() -> None:
-    print("=" * 60)
-    print("  Satellite Downlink Scheduler — Baseline Inference")
-    print("=" * 60)
-    print(f"  Model:   {MODEL_NAME}")
-    print(f"  API:     {API_BASE_URL}")
-    print(f"  Env:     {ENV_URL}")
-    print(f"  Seed:    {SEED}")
-    print(f"  Debug:   {DEBUG}")
+    if DEBUG:
+        print("=" * 60)
+        print("  Satellite Downlink Scheduler — Baseline Inference")
+        print("=" * 60)
+        print(f"  Model:   {MODEL_NAME}")
+        print(f"  API:     {API_BASE_URL}")
+        print(f"  Env:     {ENV_URL}")
+        print(f"  Seed:    {SEED}")
+        print(f"  Debug:   {DEBUG}")
 
     # ── Build LLM client ─────────────────────────────────────
     llm = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
@@ -378,7 +433,8 @@ def main() -> None:
     results = []
 
     for task in tasks:
-        print(f"\nConnecting to {ENV_URL} for {task}...")
+        if DEBUG:
+            print(f"\nConnecting to {ENV_URL} for {task}...")
 
         # Each task gets its own connection with SATELLITE_TASK set
         # We connect to the server which was started with the right task,
@@ -400,36 +456,37 @@ def main() -> None:
                 "error": str(exc),
             })
 
-    # ── Print results table ───────────────────────────────────
-    print(f"\n{'=' * 60}")
-    print("  BASELINE RESULTS")
-    print(f"{'=' * 60}")
-    print(f"  {'Task':<10}  {'Score':>7}  {'Steps':>6}  {'Reward':>8}  {'Time':>7}")
-    print(f"  {'─' * 10}  {'─' * 7}  {'─' * 6}  {'─' * 8}  {'─' * 7}")
+    if DEBUG:
+        # ── Print results table ───────────────────────────────────
+        print(f"\n{'=' * 60}")
+        print("  BASELINE RESULTS")
+        print(f"{'=' * 60}")
+        print(f"  {'Task':<10}  {'Score':>7}  {'Steps':>6}  {'Reward':>8}  {'Time':>7}")
+        print(f"  {'─' * 10}  {'─' * 7}  {'─' * 6}  {'─' * 8}  {'─' * 7}")
 
-    for r in results:
-        score = r.get("final_score", 0.0)
-        steps = r.get("steps", 0)
-        rew = r.get("total_reward", 0.0)
-        dur = r.get("duration_s", 0.0)
-        err = "  ERROR" if "error" in r else ""
-        print(f"  {r['task']:<10}  {score:>7.4f}  {steps:>6}  {rew:>8.4f}  {dur:>6.1f}s{err}")
+        for r in results:
+            score = r.get("final_score", 0.0)
+            steps = r.get("steps", 0)
+            rew = r.get("total_reward", 0.0)
+            dur = r.get("duration_s", 0.0)
+            err = "  ERROR" if "error" in r else ""
+            print(f"  {r['task']:<10}  {score:>7.4f}  {steps:>6}  {rew:>8.4f}  {dur:>6.1f}s{err}")
 
-    print(f"\n  Model:  {MODEL_NAME}")
-    print(f"  Seed:   {SEED}")
+        print(f"\n  Model:  {MODEL_NAME}")
+        print(f"  Seed:   {SEED}")
 
-    # ── Detailed breakdown ────────────────────────────────────
-    print(f"\n{'=' * 60}")
-    print("  SCORE BREAKDOWNS")
-    print(f"{'=' * 60}")
-    for r in results:
-        print(f"\n  {r['task'].upper()}:")
-        bd = r.get("breakdown", {})
-        if not bd:
-            print(f"    error: {r.get('error', 'unknown')}")
-            continue
-        print(f"    final_score:          {bd.get('final_score', 0):.4f}")
-        print(f"    bytes_downloaded:     {bd.get('bytes_downloaded', 0) / 1e6:.1f} MB")
+        # ── Detailed breakdown ────────────────────────────────────
+        print(f"\n{'=' * 60}")
+        print("  SCORE BREAKDOWNS")
+        print(f"{'=' * 60}")
+        for r in results:
+            print(f"\n  {r['task'].upper()}:")
+            bd = r.get("breakdown", {})
+            if not bd:
+                print(f"    error: {r.get('error', 'unknown')}")
+                continue
+            print(f"    final_score:          {bd.get('final_score', 0):.4f}")
+            print(f"    bytes_downloaded:     {bd.get('bytes_downloaded', 0) / 1e6:.1f} MB")
         print(f"    bytes_available:      {bd.get('bytes_available', 0) / 1e6:.1f} MB")
         print(f"    throughput:           {bd.get('throughput_pct', 0):.1f}%")
         if "priority_efficiency" in bd:

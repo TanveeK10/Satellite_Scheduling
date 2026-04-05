@@ -18,7 +18,7 @@ import uuid
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
-from src.envs.satellite_env.models import DataChunkModel, ScheduleEntryModel
+from src.envs.satellite_env.server.models import DataChunkModel, ScheduleEntryModel
 
 
 # ─────────────────────────────────────────────────────────────

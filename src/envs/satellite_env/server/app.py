@@ -22,7 +22,7 @@ Inside Docker (HF Spaces port):
 import os
 from openenv.core.env_server import create_fastapi_app
 
-from src.envs.satellite_env.models import SatelliteAction, SatelliteObservation
+from src.envs.satellite_env.server.models import SatelliteAction, SatelliteObservation
 from src.envs.satellite_env.server.environment import SatelliteEnvironment
 
 # Task is selected via environment variable so the same Docker image

@@ -24,7 +24,7 @@ from __future__ import annotations
 from openenv.core.env_client import EnvClient
 from openenv.core.client_types import StepResult
 
-from src.envs.satellite_env.models import (
+from src.envs.satellite_env.server.models import (
     DataChunkModel,
     PassWindowModel,
     RewardModel,
@@ -70,10 +70,6 @@ class SatelliteEnv(EnvClient[SatelliteAction, SatelliteObservation, SatelliteSta
         """
         # OpenEnv puts the observation dict in "observation" or uses the payload itself
         obs_data = payload.get("observation", payload)
-        print(f"DEBUG: CLIENT PAYLOAD KEYS: {list(payload.keys())}")
-        if "observation" in payload:
-            print(f"DEBUG: CLIENT OBS_DATA KEYS: {list(payload['observation'].keys())}")
-        
         # 1. Reconstruct nested model lists
         pass_windows = [
             PassWindowModel(**w)

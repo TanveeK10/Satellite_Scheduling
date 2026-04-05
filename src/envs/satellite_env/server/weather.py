@@ -24,8 +24,8 @@ from typing import Dict
 
 RESAMPLE_EVERY = 3  # ticks — 3 × 10 min = 30-min weather windows
 NUM_STATIONS = 4
-ALPHA = 5.0
-BETA = 2.0
+ALPHA = 4.0
+BETA = 4.0
 
 
 def _beta_sample(rng: random.Random) -> float:

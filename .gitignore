@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+.env/
+
+# IDEs
+.idea/
+.vscode/
+
+# Data (Generated Scenarios - Re-run scripts/generate_windows.py to recreate)
+data/*.json
+data/scenarios/*.json
+
+# Logs
+*.log

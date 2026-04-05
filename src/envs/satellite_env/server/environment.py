@@ -25,7 +25,7 @@ from typing import Any, Dict, List, Optional
 
 from openenv.core.env_server import Environment
 
-from src.envs.satellite_env.models import (
+from src.envs.satellite_env.server.models import (
     DataChunkModel,
     PassWindowModel,
     RewardModel,
@@ -65,7 +65,8 @@ SatelliteState.model_rebuild()
 # ─────────────────────────────────────────────────────────────
 
 PRIORITY_WEIGHT = {1: 1.0, 2: 2.0, 3: 3.0}
-CONFLICT_PENALTY = -0.05
+CONFLICT_PENALTY = -0.05       # Double-booking station/sat
+INVALID_ACTION_PENALTY = -0.01  # Empty buffer/missing ID (protocol error)
 DELAY_PENALTY_MAX = -0.10
 LOOKAHEAD_TICKS = 24  # 4-hour window  (24 × 10 min)
 DATA_DIR = pathlib.Path(__file__).resolve().parent.parent.parent.parent.parent / "data"
@@ -199,7 +200,12 @@ class SatelliteEnvironment(Environment):
         if not action_result["accepted"]:
             info["conflict"] = action_result.get("conflict", False)
             info["action_error"] = action_result.get("error")
-            step_reward += CONFLICT_PENALTY
+            
+            # Apply appropriate penalty
+            if info["conflict"]:
+                step_reward += CONFLICT_PENALTY
+            else:
+                step_reward += INVALID_ACTION_PENALTY
 
         # ── 2. Emergency injections ───────────────────────────────────
         current_min = self._tick * 10
