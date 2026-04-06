@@ -23,7 +23,7 @@ import random
 from typing import Dict
 
 RESAMPLE_EVERY = 3  # ticks — 3 × 10 min = 30-min weather windows
-NUM_STATIONS = 4
+NUM_STATIONS = 6
 ALPHA = 4.0
 BETA = 4.0
 

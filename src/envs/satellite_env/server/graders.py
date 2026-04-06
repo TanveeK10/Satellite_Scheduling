@@ -24,10 +24,10 @@ from src.envs.satellite_env.server.scheduler import DownlinkResult
 # Constants
 # ─────────────────────────────────────────────────────────────
 
-PRIORITY_WEIGHT: Dict[int, float] = {1: 1.0, 2: 2.0, 3: 3.0}
+PRIORITY_WEIGHT: Dict[int, float] = {1: 1.0, 2: 10.0, 3: 100.0}
 
 # Maximum delay penalty per emergency chunk (subtracted from score)
-DELAY_PENALTY_MAX = 0.10
+DELAY_PENALTY_MAX = 0.50
 
 # Weight split for task3
 TASK3_BASE_WEIGHT = 0.4
@@ -163,8 +163,13 @@ def _grade_task3(
     # Build lookup of emergency chunk metadata keyed by chunk_id
     emg_meta: Dict[str, dict] = {}
     for inj in emergency_injections:
-        c = inj["chunk"]
-        emg_meta[c["chunk_id"]] = c
+        # Support both legacy 'chunk' and new 'chunks' list format
+        burst = inj.get("chunks", [])
+        if not burst and "chunk" in inj:
+            burst = [inj["chunk"]]
+            
+        for c in burst:
+            emg_meta[c["chunk_id"]] = c
 
     if not emg_meta:
         # No emergency chunks in this scenario — fall back to task2

@@ -237,21 +237,17 @@ class Scheduler:
         tick: int,
         availability: Dict[int, float],
         window_elevations: Dict[str, float] = None,
+        window_durations: Dict[str, float] = None,
     ) -> List[DownlinkResult]:
         """
         Execute all windows scheduled for this tick.
 
         For each matching ScheduleEntryModel:
             1. Look up station availability (float multiplier)
-            2. Look up max_bytes from the window definition
+            2. Look up max_bytes from the window definition (actual duration x elevation scalar)
             3. Dequeue bytes from the satellite's priority queue
             4. Record a DownlinkResult
             5. Mark the entry as done and remove from active schedule
-
-        Returns list of DownlinkResults for this tick.
-        The environment uses these to compute reward and update info dict.
-
-        availability: Dict[station_id → float]  (from WeatherSampler.get())
         """
         results: List[DownlinkResult] = []
 
@@ -260,15 +256,18 @@ class Scheduler:
 
         for entry in firing:
             avail = availability.get(entry.station_id, 1.0)
-            rate_bps = self._downlink_rates.get(entry.sat_id, 150_000_000)
+            rate_bps = self._downlink_rates.get(entry.sat_id, 100_000_000)
             
-            # Elevation curve throttling
+            # Elevation & Duration Fidelity
             import math
             elev_deg = window_elevations.get(entry.window_id, 90.0) if window_elevations else 90.0
-            elev_scalar = math.sin(math.radians(max(0, elev_deg)))
+            dur_s = window_durations.get(entry.window_id, 600.0) if window_durations else 600.0
             
-            # max_bytes for this window: rate × 600s (one tick) × availability × elevation efficiency
-            window_bytes = int((rate_bps / 8) * 600 * avail * elev_scalar)
+            # Harsher Scalar floor (0.1 instead of 0.3)
+            elev_scalar = 0.1 + 0.9 * math.sin(math.radians(max(0, elev_deg)))
+            
+            # max_bytes = rate × duration × availability × elevation efficiency
+            window_bytes = int((rate_bps / 8) * dur_s * avail * elev_scalar)
 
             bytes_downloaded, chunks_log = self._dequeue(
                 entry.sat_id, window_bytes

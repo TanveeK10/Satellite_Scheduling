@@ -77,6 +77,7 @@ class SatelliteAction(Action):
     station_id: Optional[int] = None
     window_id: Optional[str] = None
     schedule_id: Optional[str] = None
+    schedules: Optional[List[Dict[str, Any]]] = None
 
 
 # ─────────────────────────────────────────────

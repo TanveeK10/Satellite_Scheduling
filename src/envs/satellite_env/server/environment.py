@@ -64,10 +64,10 @@ SatelliteState.model_rebuild()
 # Reward weights — defined once, used by both step() and graders
 # ─────────────────────────────────────────────────────────────
 
-PRIORITY_WEIGHT = {1: 1.0, 2: 2.0, 3: 3.0}
-CONFLICT_PENALTY = -0.05       # Double-booking station/sat
+PRIORITY_WEIGHT = {1: 1.0, 2: 10.0, 3: 100.0}
+CONFLICT_PENALTY = -0.10       # Double-booking station/sat
 INVALID_ACTION_PENALTY = -0.01  # Empty buffer/missing ID (protocol error)
-DELAY_PENALTY_MAX = -0.10
+DELAY_PENALTY_MAX = -0.50
 LOOKAHEAD_TICKS = 24  # 4-hour window  (24 × 10 min)
 DATA_DIR = pathlib.Path(__file__).resolve().parent.parent.parent.parent.parent / "data"
 
@@ -224,7 +224,17 @@ class SatelliteEnvironment(Environment):
         # ── 4. Compute reward ─────────────────────────────────────────
         tick_weighted_bytes = 0.0
         total_bytes_this_tick = 0
-        breakdown = {"priority_1": 0.0, "priority_2": 0.0, "priority_3": 0.0, "penalties": 0.0}
+        breakdown = {
+            "priority_1": 0.0, "priority_2": 0.0, "priority_3": 0.0, 
+            "penalties": 0.0, "bonuses": 0.0
+        }
+
+        # Bonus: Concurrency (rewarding multiple unique stations in one batch)
+        unique_stations = set(r.station_id for r in results if r.bytes_downloaded > 0)
+        if len(unique_stations) > 1:
+            concurrency_bonus = (len(unique_stations) - 1) * 0.01
+            step_reward += concurrency_bonus
+            breakdown["bonuses"] += concurrency_bonus
 
         def _get(obj, key, default=None):
             if isinstance(obj, dict): return obj.get(key, default)
@@ -232,6 +242,15 @@ class SatelliteEnvironment(Environment):
 
         for r in results:
             chunks_downloaded = _get(r, "chunks_downloaded", [])
+            elev = window_elevations.get(r.schedule_id, 90.0)
+            avail = r.availability
+            
+            # Bonus: Quality (High Elevation & Clear Weather)
+            if elev > 45.0 and avail > 0.8 and r.bytes_downloaded > 0:
+                quality_bonus = 0.005
+                step_reward += quality_bonus
+                breakdown["bonuses"] += quality_bonus
+
             for chunk_log in chunks_downloaded:
                 p = _get(chunk_log, "priority", 1)
                 bt = _get(chunk_log, "bytes_taken", 0)
@@ -252,12 +271,29 @@ class SatelliteEnvironment(Environment):
                     download_min = self._tick * 10
                     if download_min > deadline:
                         delay_min = download_min - deadline
+                        # Scale penalty by time (max out at 60 mins)
                         penalty = DELAY_PENALTY_MAX * min(delay_min / 60.0, 1.0)
-                        step_reward += penalty
+                        step_reward += penalty  # DELAY_PENALTY_MAX is negative
                         breakdown["penalties"] += penalty
 
+        # Penalty: Idle Buffers (Skipping windows when you have data)
+        if action.action_type == "noop":
+            buffer_bytes = self._scheduler._buffer_bytes
+            # Detect if any satellite had data AND a window available at the CURRENT tick
+            idle_sats = 0
+            for sid, buf in buffer_bytes.items():
+                if buf > 0:
+                    # Check if ANY window existed for this sat at this tick
+                    has_win = any(w for w in self._all_windows if w["sat_id"] == sid and w["tick"] == self._tick)
+                    if has_win:
+                        idle_sats += 1
+            
+            if idle_sats > 0:
+                idle_penalty = idle_sats * -0.005
+                step_reward += idle_penalty
+                breakdown["penalties"] += idle_penalty
 
-        # Normalise to [0, 1] range
+        # Normalise throughput to [0, 1] range
         if self._normalizer > 0:
             step_reward += tick_weighted_bytes / self._normalizer
 
@@ -266,26 +302,7 @@ class SatelliteEnvironment(Environment):
         info["reward_breakdown"] = breakdown
 
         # ── 5. Advance clock ──────────────────────────────────────────
-        # Only advance the tick if the agent explicitly 'noop's (waits)
-        # or if they've made too many actions in a single tick (safety).
-        tick_advanced = False
-        if action.action_type == "noop":
-            self._tick += 1
-            tick_advanced = True
-        
-        # Safety: auto-advance if agent is spamming actions without noop
-        self._actions_this_tick += 1
-        if self._actions_this_tick > 50:
-            self._tick += 1
-            self._actions_this_tick = 0
-            tick_advanced = True
-        
-        if tick_advanced:
-            self._actions_this_tick = 0
-            # Reset conflict flag for next tick's first action
-            # (only if we want to clear the 'last action rejected' state)
-            pass
-
+        self._tick += 1
         self._total_reward += step_reward
 
         # ── 6. Check terminal condition ───────────────────────────────
@@ -387,6 +404,42 @@ class SatelliteEnvironment(Environment):
                 tick=self._tick,
             )
 
+        elif t == "schedule_multiple":
+            if not action.schedules:
+                return {"accepted": False, "conflict": False, "error": "schedule_multiple requires schedules array"}
+            
+            any_conflict = False
+            all_accepted = True
+            errors = []
+            
+            for sched in action.schedules:
+                sat_id = sched.get("sat_id")
+                station_id = sched.get("station_id")
+                window_id = sched.get("window_id")
+                
+                if None in (sat_id, station_id, window_id):
+                    all_accepted = False
+                    errors.append("missing fields in schedule dict")
+                    continue
+                
+                res = self._scheduler.schedule(
+                    sat_id=sat_id,
+                    station_id=station_id,
+                    window_id=window_id,
+                    tick=self._tick,
+                )
+                if not res.accepted:
+                    all_accepted = False
+                    if res.conflict: any_conflict = True
+                    if res.error: errors.append(res.error)
+            
+            return {
+                "accepted": all_accepted,
+                "conflict": any_conflict,
+                "error": "; ".join(errors) if errors else None,
+                "schedule_id": None
+            }
+
         elif t == "preempt":
             if action.schedule_id is None:
                 return {"accepted": False, "conflict": False,
@@ -424,15 +477,29 @@ class SatelliteEnvironment(Environment):
         """
         injected = []
         for inj in self._injections:
-            if inj["inject_at_min"] != current_min:
+            # Sync with 'tick' based injections from scale_scenarios
+            inj_min = inj.get("tick", 0) * 10 if "tick" in inj else inj.get("inject_at_min", -1)
+            if inj_min != current_min:
                 continue
-            chunk_id = inj["chunk"]["chunk_id"]
-            if chunk_id in self._injected_ids:
-                continue
-            chunk = DataChunkModel(**inj["chunk"])
-            self._scheduler.inject_chunks(inj["sat_id"], [chunk])
-            self._injected_ids.add(chunk_id)
-            injected.append(chunk)
+
+            # Process all chunks in this injection burst
+            burst_chunks = inj.get("chunks", [])
+            # Support legacy single-chunk format as fallback
+            if not burst_chunks and "chunk" in inj:
+                burst_chunks = [inj["chunk"]]
+
+            current_burst = []
+            for c_dict in burst_chunks:
+                cid = c_dict["chunk_id"]
+                if cid not in self._injected_ids:
+                    chunk = DataChunkModel(**c_dict)
+                    current_burst.append(chunk)
+                    self._injected_ids.add(cid)
+
+            if current_burst:
+                self._scheduler.inject_chunks(inj["sat_id"], current_burst)
+                injected.extend(current_burst)
+
         return injected
 
     def _build_observation(self, info: dict) -> SatelliteObservation:
@@ -526,8 +593,8 @@ class SatelliteEnvironment(Environment):
                 total += PRIORITY_WEIGHT.get(c["priority"], 1.0) * c["size_bytes"]
         # Add emergency injection chunks
         for inj in self._injections:
-            c = inj["chunk"]
-            total += PRIORITY_WEIGHT.get(c["priority"], 1.0) * c["size_bytes"]
+            for c in inj.get("chunks", []):
+                total += PRIORITY_WEIGHT.get(c["priority"], 1.0) * c.get("size_bytes", 0)
         return total
 
     def _all_initial_chunks(self) -> List[dict]:
@@ -538,5 +605,5 @@ class SatelliteEnvironment(Environment):
         for chunk_list in self._scenario["initial_queues"].values():
             chunks.extend(chunk_list)
         for inj in self._injections:
-            chunks.append(inj["chunk"])
+            chunks.extend(inj.get("chunks", []))
         return chunks

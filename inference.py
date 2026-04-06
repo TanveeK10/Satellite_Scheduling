@@ -37,6 +37,7 @@ SYSTEM_PROMPT = textwrap.dedent("""
     Emergency chunks (priority 3) have deadlines — download them FIRST.
 
     Available actions (respond with EXACTLY ONE JSON object):
+        {"action_type": "schedule_multiple", "schedules": [{"sat_id": int, "station_id": int, "window_id": str}, ...]}
         {"action_type": "schedule",  "sat_id": int, "station_id": int, "window_id": str}
         {"action_type": "preempt",   "schedule_id": str}
         {"action_type": "hold",      "sat_id": int}
@@ -46,9 +47,11 @@ SYSTEM_PROMPT = textwrap.dedent("""
     1. STATION CONSTRAINT: One station can only talk to ONE satellite at a time.
     2. REDUNDANCY: Do NOT re-schedule a satellite that is already in your CURRENT SCHEDULE.
     3. PRIORITY: Always check SATELLITES REMAINING and PRIORITY QUEUES. Follow deadlines strictly.
-    4. NOOP (Wait Strategy): If SATELLITES REMAINING is not empty but TOP WINDOWS is empty, use {"action_type": "noop"} to fast-forward time until a satellite flies over a ground station.
-    5. COVERAGE: You MUST schedule every satellite that has data (buf > 0). If windows are available in TOP WINDOWS, you are forbidden from using noop.
-    6. TERMINATION: Only use noop repeatedly once SATELLITES REMAINING is empty.
+    4. NOOP (Wait Strategy): You can ONLY schedule a window if its tick matches the CURRENT TIME. If your TOP WINDOWS are all in the future, use {"action_type": "noop"} to wait until the current tick reaches the window's start time.
+    5. COVERAGE: You MUST schedule every satellite that has data (buf > 0). If a window is available at the CURRENT TIME, you are forbidden from using noop.
+    6. CONFLICTS: If two satellites compete for the same ground station at the same time, favor the one with higher priority chunks or higher elevation (elev=XXdeg).
+    7. TERMINATION: Only use noop repeatedly once SATELLITES REMAINING is empty.
+    8. BATCH CONSISTENCY: Within a "schedule_multiple" array, you are FORBIDDEN from assigning the same station_id to more than one satellite. Each ground station has only one antenna per tick.
 
     Respond with ONLY a valid JSON object. No explanation, no markdown fences.
 """).strip()
@@ -57,6 +60,10 @@ SYSTEM_PROMPT = textwrap.dedent("""
 
 def _format_action_tag(action: SatelliteAction) -> str:
     """Format action as type(params) for the judge tag."""
+    if action.action_type == "schedule_multiple" and action.schedules:
+        items = [f"sat{s.get('sat_id')}->stn{s.get('station_id')}" for s in action.schedules]
+        return f"schedule_multiple([{', '.join(items)}])"
+        
     params = []
     if action.sat_id is not None: params.append(f"sat_id={action.sat_id}")
     if action.station_id is not None: params.append(f"station_id={action.station_id}")
@@ -67,12 +74,14 @@ def _format_action_tag(action: SatelliteAction) -> str:
 def log_start(task: str, env: str, model: str) -> None:
     print(f"[START] task={task} env={env} model={model}", flush=True)
 
-def log_step(step: int, action: SatelliteAction, reward: float, done: bool, error: Optional[str]) -> None:
-    error_val = error if error else "null"
+def log_step(step: int, action: SatelliteAction, reward: float, done: bool, info: dict) -> None:
+    error_val = info.get("action_error") if info.get("action_error") else "null"
     done_val = str(done).lower()
     action_str = _format_action_tag(action)
+    raw = info.get("bytes_this_tick", 0)
+    norm = info.get("normalizer", 0)
     print(
-        f"[STEP] step={step} action={action_str} reward={reward:.2f} done={done_val} error={error_val}",
+        f"[STEP] step={step} action={action_str} reward={reward:.2f} done={done_val} error={error_val} raw={raw} norm={norm:.0f}",
         flush=True,
     )
 
@@ -104,10 +113,10 @@ def _obs_to_prompt(obs: SatelliteObservation, step: int) -> str:
         key=lambda t: t[0] * (buf_bytes.get(t[1].window_id.split("_")[1].replace("s",""), 0) or max_buf) / max_buf,
         reverse=True
     )
-    ranked = [t[1] for t in ranked][:8]
+    ranked = [t[1] for t in ranked][:15]
 
     windows_text = "\n".join(
-        f"  id={w.window_id} sat={w.sat_id} stn={w.station_id} q={w.link_quality:.2f} elev={w.elevation_deg:.1f}deg buf={buf_bytes.get(str(w.sat_id),0)//1_000_000}MB"
+        f"  id={w.window_id} sat={w.sat_id} stn={w.station_id} tick={w.tick} q={w.link_quality:.2f} elev={w.elevation_deg:.1f}deg buf={buf_bytes.get(str(w.sat_id),0)//1_000_000}MB"
         for w in ranked
     ) or "  (none)"
     
@@ -124,7 +133,7 @@ def _obs_to_prompt(obs: SatelliteObservation, step: int) -> str:
     # Current schedule
     sched_text = "\n".join(
         f"  {e.schedule_id}: sat{e.sat_id}->stn{e.station_id} tick={e.tick}"
-        for e in obs.current_schedule[:5]
+        for e in obs.current_schedule[:15]
     ) or "  (empty)"
     
     # SATELLITES REMAINING summary — makes agent coverage obligation explicit
@@ -135,15 +144,17 @@ def _obs_to_prompt(obs: SatelliteObservation, step: int) -> str:
     remaining_summary = ", ".join(remaining_sats) if remaining_sats else "ALL EMPTY — use noop"
 
     return textwrap.dedent(f"""
-        Step {step} | t={obs.current_time_min}min | reward_so_far={obs.reward:.4f}
+        CURRENT TIME: Step {step} | t={obs.current_time_min}min (tick={obs.current_time_min // 10})
         SATELLITES REMAINING (must schedule all): {remaining_summary}
-        TOP WINDOWS (one per satellite with data):
+        TOP WINDOWS (best per satellite):
         {windows_text}
         PRIORITY QUEUES (Heads):
         {queue_summary}
         CURRENT SCHEDULE:
         {sched_text}
         EMERGENCY: {obs.info.get('emergency_injection', False)}
+        RAW BYTES: {obs.info.get('bytes_this_tick', 0)} | NORM: {obs.info.get('normalizer', 0):.0f}
+        BREAKDOWN: {obs.info.get('reward_breakdown', {})}
         LAST ERROR: {obs.info.get('action_error', 'none')}
     """).strip()
 
@@ -188,7 +199,17 @@ def run_task(client: OpenAI, task_name: str):
                     break
 
                 action = get_action(client, obs, step)
-                
+
+                if action.action_type == "schedule_multiple" and action.schedules:
+                    unique_schedules = []
+                    seen_stations = set()
+                    for s in action.schedules:
+                        sid = s.get("station_id")
+                        if sid not in seen_stations:
+                            unique_schedules.append(s)
+                            seen_stations.add(sid)
+                    action.schedules = unique_schedules
+
                 result = env.step(action)
                 obs = result.observation
                 
@@ -199,7 +220,7 @@ def run_task(client: OpenAI, task_name: str):
                 rewards_list.append(reward)
                 steps_taken = step
                 
-                log_step(step=step, action=action, reward=reward, done=done, error=error)
+                log_step(step=step, action=action, reward=reward, done=done, info=obs.info)
 
                 if done:
                     break
@@ -207,7 +228,7 @@ def run_task(client: OpenAI, task_name: str):
             final_state = env.state()
             score = final_state.final_score
             score = min(max(score, 0.0), 1.0)  # clamp to [0, 1] as required
-            success = score > 0.0 # Standard condition for success label
+            success = score >= 0.7 # High-fidelity success threshold
 
     except Exception as e:
         print(f"[DEBUG] Task failed: {e}", file=sys.stderr)
@@ -217,9 +238,13 @@ def run_task(client: OpenAI, task_name: str):
 def main():
     client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
     
-    # Run all three tasks as defined in the deployment guide
-    for task in ["task1", "task2", "task3"]:
-        run_task(client, task)
+    # Respect the SATELLITE_TASK environment variable if provided
+    specific_task = os.getenv("SATELLITE_TASK")
+    if specific_task:
+        run_task(client, specific_task)
+    else:
+        # Default behavior: run Task 1 only, or loop if preferred
+        run_task(client, "task1")
 
 if __name__ == '__main__':
     main()

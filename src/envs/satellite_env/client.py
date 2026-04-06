@@ -57,6 +57,7 @@ class SatelliteEnv(EnvClient[SatelliteAction, SatelliteObservation, SatelliteSta
         if action.station_id is not None: payload["station_id"] = action.station_id
         if action.window_id is not None: payload["window_id"] = action.window_id
         if action.schedule_id is not None: payload["schedule_id"] = action.schedule_id
+        if action.schedules is not None: payload["schedules"] = action.schedules
         return payload
 
     # ------------------------------------------------------------------
