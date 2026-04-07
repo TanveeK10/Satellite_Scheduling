@@ -8,17 +8,18 @@
 # This file is for the OpenEnv CLI and judge pipeline specifically.
 
 name: satellite-downlink-scheduler
-version: "1.0.0"
+version: "1.2.0"
 author: "Dhruvk14"
 repository: "https://huggingface.co/spaces/Dhruvk14/Satellite_Scheduler"
 license: "apache-2.0"
 
 description: >
-  A simulation of 8 LEO satellites with TLE-derived orbital pass windows
-  and 4 ground stations with weather-induced availability degradation.
-  Each satellite carries a priority queue of observation data.
-  The agent must assign contact windows to maximise total
-  priority-weighted bytes downloaded within a 24-hour planning horizon.
+  A high-concurrency simulation of a 15-satellite fleet with 6 ground stations
+  supporting the "OpenEnv Batch Protocol". 
+  Features dynamic weather dropouts, 100 Mbps bandwidth contention,
+  and emergency 8-burst clusters.
+  The agent must coordinate multiple simultaneous contact windows per tick
+  to maximize priority-weighted data download.
 
 tags:
   - openenv
@@ -34,25 +35,13 @@ tags:
 action_space:
   type: discrete-structured
   description: >
-    One structured action per 10-minute tick. action_type is one of:
-    schedule, preempt, hold, noop.
+    Consolidated Batch Actions. respond with EXACTLY ONE JSON object:
+    schedule_multiple or noop.
   actions:
-    - name: schedule
-      description: Assign a satellite to a station for a specific pass window
+    - name: schedule_multiple
+      description: Assign multiple satellite-station windows in a single step
       fields:
-        sat_id:     "int  [0–7]   — satellite to schedule"
-        station_id: "int  [0–3]   — ground station to use"
-        window_id:  "str         — window identifier from pass_windows list"
-
-    - name: preempt
-      description: Cancel a committed future assignment to free the station slot
-      fields:
-        schedule_id: "str — assignment ID from current_schedule list"
-
-    - name: hold
-      description: Mark a satellite as held, blocking auto-scheduling suggestions
-      fields:
-        sat_id: "int [0–7]"
+        schedules: "List[Dict] — array of {sat_id, station_id, window_id}"
 
     - name: noop
       description: Advance the clock with no assignment change

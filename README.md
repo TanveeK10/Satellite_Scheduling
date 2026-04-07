@@ -11,12 +11,12 @@ tags:
   - satellite
   - real-world
   - reinforcement-learning
-short_description: OpenEnv environment — LEO satellite downlink scheduling
+short_description: OpenEnv environment — LEO satellite downlink scheduling (v12.0 Stable)
 ---
 
 # Satellite Downlink Scheduler 🛰️
 
-This project simulates a real-world operational challenge: scheduling contact windows for a constellation of satellites to maximize data download. It is built for the *Meta-OpenEnv Hackathon*.
+This project simulates a real-world operational challenge: scheduling contact windows for a mass-constellation of satellites to maximize data download. It is built for the *Meta-OpenEnv Hackathon*.
 
 ---
 
@@ -24,18 +24,19 @@ This project simulates a real-world operational challenge: scheduling contact wi
 
 The simulation is a clock-driven environment where time moves in 10-minute ticks. A full episode represents a 24-hour planning horizon (144 ticks).
 
-### The Physical Model
+### The Physical Model (v12.0)
 
-* **Satellites (8 total)**: Low-Earth-Orbit satellites with onboard data buffers.
-* **Ground Stations (4 total)**: Svalbard, McMurdo, Bangalore, Fairbanks. Each can serve only ONE satellite at a time.
-* **Pass Windows**: Precomputed visibility windows stored in `data/scenarios/`.
+* **Constellation (15 Satellites)**: High-concurrency fleet with diverse onboard data buffers.
+* **Ground Network (6 Stations)**: Svalbard, McMurdo, Bangalore, Fairbanks, Singapore, and Perth. 
+* **Downlink Model**: 100 Mbps "Slow Pipe" creates realistic bandwidth contention and buffer backlogs.
+* **Action Model**: **Batch (N / tick)** — The agent can coordinate multiple simultaneous downlinks across the entire ground network in a single step.
 
 ### The Challenges
 
-* **Resource Contention**: Multiple satellites competing for the same station.
-* **Weather (Tasks 2 & 3)**: Degrades link quality dynamically.
-* **Priority**: Higher-priority data yields higher reward.
-* **Emergencies (Task 3)**: Deadline-based urgent data with penalties.
+* **High-Concurrency Contention**: 15 satellites competing for 6 shared ground station antennas.
+* **Weather (Tasks 2 & 3)**: Dynamically degrades link quality based on local conditions.
+* **Priority-Based Triage**: Routine (w=1), Important (w=10), and Emergency (w=100) data layers.
+* **Emergency Bursts (Task 3)**: Simultaneous **8-Burst Clusters** of urgent data with strict deadlines and late-delivery penalties.
 
 ---
 
@@ -91,10 +92,18 @@ The server MUST expose the following REST endpoints:
 ### Local Setup
 
 ```bash
+# 1. Clone and install
 git clone <your-repo>
 cd Satellite
+python -m venv venv
+
+# Windows (PowerShell)
+.\venv\Scripts\Activate.ps1
+# Mac/Linux
+source venv/bin/activate
+
+# 2. Install editable package
 pip install -e .
-python scripts/generate_windows.py
 ```
 
 ---
@@ -103,19 +112,29 @@ python scripts/generate_windows.py
 
 ### Terminal 1: Environment Server
 
-```bash
-export SATELLITE_TASK=task1
-python -m uvicorn src.envs.satellite_env.server.app:app --host 0.0.0.0 --port 7860
+The server handles physics, weather dropouts, and batch de-confliction.
+
+```powershell
+# Windows PowerShell
+$env:SATELLITE_TASK = "task3"  # Set to Task 3 for the full 15-sat stress test
+venv\Scripts\uvicorn src.envs.satellite_env.server.app:app --port 7860
+
+# Bash (Mac/Linux)
+export SATELLITE_TASK=task3
+uvicorn src.envs.satellite_env.server.app:app --port 7860
 ```
 
 ### Terminal 2: Inference Agent
 
-```bash
-export API_BASE_URL=http://localhost:11434/v1   # LLM endpoint (NOT env server)
-export MODEL_NAME=qwen2.5:7b-instruct-q4_k_m
-export HF_TOKEN=ollama
+Run the autonomous mission controller using a local LLM or HF router.
 
-python inference.py
+```powershell
+# Windows PowerShell
+$env:ENV_URL = "http://localhost:7860"
+$env:API_BASE_URL = "http://localhost:11434/v1"  # Ollama endpoint
+$env:MODEL_NAME = "qwen2.5:7b-instruct-q4_k_m"
+
+venv\Scripts\python.exe inference.py
 ```
 
 ---

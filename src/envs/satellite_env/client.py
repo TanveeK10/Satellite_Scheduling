@@ -53,11 +53,8 @@ class SatelliteEnv(EnvClient[SatelliteAction, SatelliteObservation, SatelliteSta
         Convert a SatelliteAction to a JSON-serializable dict.
         """
         payload: dict = {"action_type": action.action_type}
-        if action.sat_id is not None: payload["sat_id"] = action.sat_id
-        if action.station_id is not None: payload["station_id"] = action.station_id
-        if action.window_id is not None: payload["window_id"] = action.window_id
-        if action.schedule_id is not None: payload["schedule_id"] = action.schedule_id
-        if action.schedules is not None: payload["schedules"] = action.schedules
+        if action.schedules is not None:
+            payload["schedules"] = action.schedules
         return payload
 
     # ------------------------------------------------------------------

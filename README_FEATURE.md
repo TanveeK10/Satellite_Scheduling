@@ -1,5 +1,5 @@
-# Satellite Constellation Stress-Testing (v12.0)
-### High-Concurrency & Extreme Triage Benchmark
+# Satellite Constellation Stress-Testing (v12.0 - STABLE)
+### High-Concurrency & Extreme Triage Benchmark (Verified)
 
 This branch (`feature/concurrent-scheduling`) evolves the Satellite Scheduling environment into a professional-grade constellation simulation. It is designed to test an AI agent's ability to coordinate a 15-satellite fleet across a 6-ground station network under severe bandwidth contention (100 Mbps).
 
@@ -76,15 +76,6 @@ netstat -ano | findstr :7860
 ```
 
 ---
-
-## ⚠️ Known Issue: `KeyError: 'chunk'`
-**Condition**: Occurs during Step 92+ of Task 1 or Task 3.
-**Status**: **BLOCKED (Unsolved)**
-
-**Technical Analysis**:
-*   The new **8-burst cluster** scenario format uses a `chunks` (plural) array to support simultaneous alerts.
-*   The legacy mission grader in `graders.py` is hard-coded to look for a singular `inj['chunk']` key.
-*   **Result**: The simulation runs perfectly, but the "Mission Completion" score calculation fails when it hits a burst injection, resulting in a session crash.
 
 ---
 

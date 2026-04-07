@@ -31,9 +31,11 @@ from src.envs.satellite_env.server.environment import SatelliteEnvironment
 _task = os.getenv("SATELLITE_TASK", "task1").strip()
 _seed = int(os.getenv("SATELLITE_SEED", "42").strip())
 
-env = SatelliteEnvironment(task=_task, seed=_seed)
+# Global persistent instance to support dynamic task switching via reset()
+shared_env = SatelliteEnvironment(task=_task, seed=_seed)
+
 app = create_fastapi_app(
-    lambda: SatelliteEnvironment(task=_task, seed=_seed),
+    lambda: shared_env,
     SatelliteAction,
     SatelliteObservation,
 )

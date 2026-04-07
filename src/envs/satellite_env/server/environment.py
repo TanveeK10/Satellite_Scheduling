@@ -143,10 +143,12 @@ class SatelliteEnvironment(Environment):
         Reset to the beginning of the episode.
         Allows switching tasks dynamically during reset.
         """
+        print(f"[DEBUG] Environment.reset called: task={task}, seed={seed}")
         if task is not None: self._task = task
         if seed is not None: self._seed = seed
         
         if task is not None or seed is not None:
+            print(f"[DEBUG] Reloading scenario for {self._task}...")
             self._load_scenario(self._task, self._seed)
 
         self._boot()
@@ -389,22 +391,11 @@ class SatelliteEnvironment(Environment):
     def _dispatch_action(self, action: SatelliteAction) -> dict:
         """
         Route action to the appropriate scheduler method.
-        Returns a dict with keys: accepted, conflict, error.
+        Consolidated to only support batch scheduling and noop.
         """
         t = action.action_type
 
-        if t == "schedule":
-            if None in (action.sat_id, action.station_id, action.window_id):
-                return {"accepted": False, "conflict": False,
-                        "error": "schedule requires sat_id, station_id, window_id"}
-            result = self._scheduler.schedule(
-                sat_id=action.sat_id,
-                station_id=action.station_id,
-                window_id=action.window_id,
-                tick=self._tick,
-            )
-
-        elif t == "schedule_multiple":
+        if t == "schedule_multiple":
             if not action.schedules:
                 return {"accepted": False, "conflict": False, "error": "schedule_multiple requires schedules array"}
             
@@ -440,34 +431,12 @@ class SatelliteEnvironment(Environment):
                 "schedule_id": None
             }
 
-        elif t == "preempt":
-            if action.schedule_id is None:
-                return {"accepted": False, "conflict": False,
-                        "error": "preempt requires schedule_id"}
-            result = self._scheduler.preempt(
-                schedule_id=action.schedule_id,
-                current_tick=self._tick,
-            )
-
-        elif t == "hold":
-            if action.sat_id is None:
-                return {"accepted": False, "conflict": False,
-                        "error": "hold requires sat_id"}
-            result = self._scheduler.hold(action.sat_id)
-
         elif t == "noop":
             return {"accepted": True}
 
         else:
             return {"accepted": False, "conflict": False,
-                    "error": f"Unknown action_type: '{t}'"}
-
-        return {
-            "accepted": result.accepted,
-            "conflict": result.conflict,
-            "error": result.error,
-            "schedule_id": result.schedule_id,
-        }
+                    "error": f"Unknown or deprecated action_type: '{t}'"}
 
     def _fire_injections(self, current_min: int) -> List[DataChunkModel]:
         """
@@ -593,7 +562,10 @@ class SatelliteEnvironment(Environment):
                 total += PRIORITY_WEIGHT.get(c["priority"], 1.0) * c["size_bytes"]
         # Add emergency injection chunks
         for inj in self._injections:
-            for c in inj.get("chunks", []):
+            burst = inj.get("chunks", [])
+            if not burst and "chunk" in inj:
+                burst = [inj["chunk"]]
+            for c in burst:
                 total += PRIORITY_WEIGHT.get(c["priority"], 1.0) * c.get("size_bytes", 0)
         return total
 
@@ -605,5 +577,8 @@ class SatelliteEnvironment(Environment):
         for chunk_list in self._scenario["initial_queues"].values():
             chunks.extend(chunk_list)
         for inj in self._injections:
-            chunks.extend(inj.get("chunks", []))
+            burst = inj.get("chunks", [])
+            if not burst and "chunk" in inj:
+                burst = [inj["chunk"]]
+            chunks.extend(burst)
         return chunks

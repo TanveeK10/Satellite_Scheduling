@@ -73,10 +73,6 @@ class RewardModel(BaseModel):
 
 class SatelliteAction(Action):
     action_type: str = Field(...)
-    sat_id: Optional[int] = None
-    station_id: Optional[int] = None
-    window_id: Optional[str] = None
-    schedule_id: Optional[str] = None
     schedules: Optional[List[Dict[str, Any]]] = None
 
 

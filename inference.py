@@ -38,9 +38,6 @@ SYSTEM_PROMPT = textwrap.dedent("""
 
     Available actions (respond with EXACTLY ONE JSON object):
         {"action_type": "schedule_multiple", "schedules": [{"sat_id": int, "station_id": int, "window_id": str}, ...]}
-        {"action_type": "schedule",  "sat_id": int, "station_id": int, "window_id": str}
-        {"action_type": "preempt",   "schedule_id": str}
-        {"action_type": "hold",      "sat_id": int}
         {"action_type": "noop"}
 
     PLANNING RULES:
@@ -63,13 +60,7 @@ def _format_action_tag(action: SatelliteAction) -> str:
     if action.action_type == "schedule_multiple" and action.schedules:
         items = [f"sat{s.get('sat_id')}->stn{s.get('station_id')}" for s in action.schedules]
         return f"schedule_multiple([{', '.join(items)}])"
-        
-    params = []
-    if action.sat_id is not None: params.append(f"sat_id={action.sat_id}")
-    if action.station_id is not None: params.append(f"station_id={action.station_id}")
-    if action.window_id is not None: params.append(f"window_id={action.window_id}")
-    if action.schedule_id is not None: params.append(f"schedule_id={action.schedule_id}")
-    return f"{action.action_type}({', '.join(params)})"
+    return f"{action.action_type}()"
 
 def log_start(task: str, env: str, model: str) -> None:
     print(f"[START] task={task} env={env} model={model}", flush=True)
@@ -87,7 +78,7 @@ def log_step(step: int, action: SatelliteAction, reward: float, done: bool, info
 
 def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> None:
     rewards_str = ",".join(f"{r:.2f}" for r in rewards)
-    print(f"[END] success={str(success).lower()} steps={steps} score={score:.3f} rewards={rewards_str}", flush=True)
+    print(f"[END] success={str(success).lower()} steps={steps} score={score:.4f} rewards={rewards_str}", flush=True)
 
 def _obs_to_prompt(obs: SatelliteObservation, step: int) -> str:
     # Compact serialisation for the agent
@@ -181,7 +172,7 @@ def get_action(client: OpenAI, obs: SatelliteObservation, step: int) -> Satellit
     except Exception:
         return SatelliteAction(action_type="noop")
 
-def run_task(client: OpenAI, task_name: str):
+def run_task(env: SatelliteEnv, client: OpenAI, task_name: str) -> float:
     rewards_list: List[float] = []
     steps_taken = 0
     score = 0.0
@@ -190,61 +181,83 @@ def run_task(client: OpenAI, task_name: str):
     log_start(task=task_name, env=BENCHMARK, model=MODEL_NAME)
 
     try:
-        with SatelliteEnv(base_url=ENV_URL).sync() as env:
-            result = env.reset(task=task_name)
+        result = env.reset(task=task_name)
+        obs = result.observation
+
+        for step in range(1, MAX_STEPS + 1):
+            if obs.done:
+                break
+
+            action = get_action(client, obs, step)
+
+            if action.action_type == "schedule_multiple" and action.schedules:
+                unique_schedules = []
+                seen_stations = set()
+                for s in action.schedules:
+                    sid = s.get("station_id")
+                    if sid not in seen_stations:
+                        unique_schedules.append(s)
+                        seen_stations.add(sid)
+                action.schedules = unique_schedules
+
+            result = env.step(action)
             obs = result.observation
+            
+            reward = obs.info_dict.get("reward_last_tick", 0.0)
+            done = obs.done
+            # error = obs.info_dict.get("action_error") if obs.info_dict.get("conflict") else None
 
-            for step in range(1, MAX_STEPS + 1):
-                if obs.done:
-                    break
+            rewards_list.append(reward)
+            steps_taken = step
+            
+            log_step(step=step, action=action, reward=reward, done=done, info=obs.info_dict)
 
-                action = get_action(client, obs, step)
+            if done:
+                break
 
-                if action.action_type == "schedule_multiple" and action.schedules:
-                    unique_schedules = []
-                    seen_stations = set()
-                    for s in action.schedules:
-                        sid = s.get("station_id")
-                        if sid not in seen_stations:
-                            unique_schedules.append(s)
-                            seen_stations.add(sid)
-                    action.schedules = unique_schedules
-
-                result = env.step(action)
-                obs = result.observation
-                
-                reward = obs.info.get("reward_last_tick", 0.0)
-                done = obs.done
-                error = obs.info.get("action_error") if obs.info.get("conflict") else None
-
-                rewards_list.append(reward)
-                steps_taken = step
-                
-                log_step(step=step, action=action, reward=reward, done=done, info=obs.info)
-
-                if done:
-                    break
-
-            final_state = env.state()
-            score = final_state.final_score
-            score = min(max(score, 0.0), 1.0)  # clamp to [0, 1] as required
-            success = score >= 0.7 # High-fidelity success threshold
+        final_state = env.state()
+        score = final_state.final_score
+        score = min(max(score, 0.0), 1.0)  # clamp to [0, 1] as required
+        success = score >= 0.7 # High-fidelity success threshold
 
     except Exception as e:
-        print(f"[DEBUG] Task failed: {e}", file=sys.stderr)
+        print(f"[DEBUG] Task {task_name} failed: {e}", file=sys.stderr)
     finally:
         log_end(success=success, steps=steps_taken, score=score, rewards=rewards_list)
+        return score
 
 def main():
     client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
     
-    # Respect the SATELLITE_TASK environment variable if provided
-    specific_task = os.getenv("SATELLITE_TASK")
-    if specific_task:
-        run_task(client, specific_task)
-    else:
-        # Default behavior: run Task 1 only, or loop if preferred
-        run_task(client, "task1")
+    # Run a specific task or all tasks sequentially
+    specific_task = os.getenv("SATELLITE_TASK", "all").lower().strip()
+    
+    with SatelliteEnv(base_url=ENV_URL).sync() as env:
+        if specific_task in ("task1", "task2", "task3"):
+            run_task(env, client, specific_task)
+        else:
+            # Unified run of all tasks in a single session
+            tasks = ["task1", "task2", "task3"]
+            scores = {}
+            
+            print("\n" + "="*50)
+            print("STARTING UNIFIED MULTI-TASK BENCHMARK (Continuous Session)")
+            print("="*50 + "\n")
+            
+            for t in tasks:
+                print(f"\n>>> Running {t}...")
+                scores[t] = run_task(env, client, t)
+                
+            print("\n" + "="*50)
+            print("FINAL MULTI-TASK SCORECARD")
+            print("="*50)
+            for t, s in scores.items():
+                print(f"  {t.upper():<8}: {s:.4f}")
+            
+            avg = sum(scores.values()) / len(scores)
+            print("-" * 50)
+            print(f"  OVERALL : {avg:.4f}")
+            print("="*50 + "\n")
 
 if __name__ == '__main__':
     main()

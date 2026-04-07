@@ -300,8 +300,11 @@ def _compute_delay_penalties(
 
 
 def _clip(score: float) -> float:
-    """Clip to [0.0, 1.0]. Penalties cannot push score below zero."""
-    return round(max(0.0, min(1.0, score)), 4)
+    """Clip to (0.0, 1.0) strictly, as required by Phase 2 validation."""
+    # Ensure score is never exactly 0.0 or 1.0
+    # Clamping to 0.001 - 0.999 to avoid rounding to 1.000 in logs
+    strict_score = max(0.001, min(0.999, score))
+    return round(strict_score, 4)
 
 
 # ─────────────────────────────────────────────────────────────
@@ -355,10 +358,15 @@ def grade_breakdown(
         breakdown["priority_efficiency"] = round(w_dl / max(1, w_tot), 4)
 
     if task == "task3":
-        emg_meta = {
-            inj["chunk"]["chunk_id"]: inj["chunk"]
-            for inj in emergency_injections
-        }
+        emg_meta = {}
+        for inj in emergency_injections:
+            # Support both legacy 'chunk' and new 'chunks' list format
+            burst = inj.get("chunks", [])
+            if not burst and "chunk" in inj:
+                burst = [inj["chunk"]]
+                
+            for c in burst:
+                emg_meta[c["chunk_id"]] = c
         emg_total = sum(
             PRIORITY_WEIGHT[3] * c["size_bytes"]
             for c in emg_meta.values()
