@@ -17,8 +17,8 @@ from src.envs.satellite_env.client import SatelliteEnv
 from src.envs.satellite_env.models import SatelliteAction, SatelliteObservation
 
 # ── Mandatory Environment Configuration ──────────────────────
-API_BASE_URL = os.getenv("API_BASE_URL", "https://router.huggingface.co/v1")
-MODEL_NAME = os.getenv("MODEL_NAME", "qwen2.5:7b-instruct-q4_k_m")
+API_BASE_URL = os.getenv("API_BASE_URL", "<your-active-endpoint>")
+MODEL_NAME = os.getenv("MODEL_NAME", "<your-active-model>")
 HF_TOKEN = os.getenv("HF_TOKEN")
 ENV_URL = os.getenv("ENV_URL", "http://localhost:7860")
 
