@@ -90,7 +90,7 @@ class Scheduler:
     ) -> None:
         # Deep-copy queues so reset() can restore from originals
         self._original_queues = {
-            sid: [c.model_copy() for c in chunks]
+            sid: [c.model_copy(deep=True) for c in chunks]
             for sid, chunks in initial_queues.items()
         }
         self._downlink_rates = downlink_rates_bps
@@ -329,7 +329,7 @@ class Scheduler:
     def _init_queues(self) -> None:
         """Restore queues and buffer_bytes from original deep copy."""
         self._queues = {
-            sid: [c.model_copy() for c in chunks]
+            sid: [c.model_copy(deep=True) for c in chunks]
             for sid, chunks in self._original_queues.items()
         }
         self._buffer_bytes = {

@@ -79,11 +79,14 @@ tasks:
   - name: task1
     description: Baseline scheduling (clear weather, 85 chunks/sat, 0 emergencies)
     seed: 42
+    grader: true
 
   - name: task2
     description: Weather resilience (dynamic station availability, 85 chunks/sat)
     seed: 42
+    grader: true
 
   - name: task3
     description: Full operations (weather + 8 high-priority emergency injections)
     seed: 42
+    grader: true
