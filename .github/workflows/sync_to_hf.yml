@@ -12,14 +12,17 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
-      - name: Debug Info
+      - name: Verify Secret
         run: |
-          git remote -v
-          echo "Syncing to Dhruvk14/Satellite_scheduler_updated"
+          if [ -z "${{ secrets.HF_TOKEN }}" ]; then
+            echo "Error: HF_TOKEN is empty. Please add it to your GitHub Secrets."
+            exit 1
+          fi
       - name: Push to hub
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
           git config --global user.email "bot@github.com"
           git config --global user.name "SyncBot"
-          git push --force https://Dhruvk14:$HF_TOKEN@huggingface.co/spaces/Dhruvk14/Satellite_scheduler_updated main
+          # Using HEAD:refs/heads/main to ensure we push the current commit to the remote main branch
+          git push --force https://Dhruvk14:$HF_TOKEN@huggingface.co/spaces/Dhruvk14/Satellite_scheduler_updated HEAD:refs/heads/main
