@@ -24,5 +24,5 @@ jobs:
         run: |
           git config --global user.email "bot@github.com"
           git config --global user.name "SyncBot"
-          # Using HEAD:refs/heads/main to ensure we push the current commit to the remote main branch
-          git push --force https://Dhruvk14:$HF_TOKEN@huggingface.co/spaces/Dhruvk14/Satellite_scheduler_updated HEAD:refs/heads/main
+          # Use oauth2 format for the token to prevent "Password Authentication" errors
+          git push --force https://oauth2:$HF_TOKEN@huggingface.co/spaces/Dhruvk14/Satellite_scheduler_updated HEAD:refs/heads/main
