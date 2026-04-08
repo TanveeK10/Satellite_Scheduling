@@ -56,7 +56,8 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=15s --retries=3 \
 
 # ── Start server ──────────────────────────────────────────────
 # Using the module path relative to the root
-CMD uvicorn src.envs.satellite_env.server.app:app \
-        --host ${HOST} \
-        --port ${PORT} \
-        --workers ${WORKERS}
+#CMD uvicorn src.envs.satellite_env.server.app:app \
+#        --host ${HOST} \
+#        --port ${PORT} \
+#        --workers ${WORKERS}
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "7860"]
